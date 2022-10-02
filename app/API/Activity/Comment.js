@@ -15,3 +15,12 @@ Server.on("POST", "/api/activity/comment", async (request, response, parameters)
         content: id
     };
 }, [ "activity", "text" ]);
+
+Server.on("GET", "/api/activity/comment", async (request, response, parameters) => {
+    const rows = await Database.queryAsync(`SELECT * FROM activity_comments WHERE id = ${Database.connection.escape(parameters.comment)}`);
+
+    return {
+        success: true,
+        content: (rows.length)?(rows[0]):(null)
+    };
+}, [ "comment" ]);
