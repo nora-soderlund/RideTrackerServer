@@ -9,6 +9,7 @@ import "./API/User/Authenticate.js";
 
 import "./API/Activity.js";
 import "./API/Activity/Map.js";
+import "./API/Activity/Export.js";
 import "./API/Activity/Upload.js";
 import "./API/Activity/Comment.js";
 import "./API/Activity/Comments.js";

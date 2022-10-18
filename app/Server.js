@@ -55,10 +55,13 @@ export default class Server {
                 result = await listener.response(request, response);
 
             response.writeHead(200, {
-                "Content-Type": "text/json"
+                "Content-Type": listener.contentType
             });
-        
-            response.end(JSON.stringify(result));
+
+            if(listener.contentType == "application/json")
+                result = JSON.stringify(result);
+            
+            response.end(result);
         }
         catch(error) {
             console.error(request.socket.remoteAddress + ": " + error);
@@ -82,10 +85,10 @@ export default class Server {
         });
     };
 
-    static on(method, path, response, requiredParameters = undefined) {
+    static on(method, path, response, requiredParameters = undefined, contentType = "application/json") {
         if(this.requests.find(x => x.method == method && x.path == path))
             throw new Error("Duplicate entry for " + method + " " + path);
 
-        this.requests.push({ method, path, response, requiredParameters });
+        this.requests.push({ method, path, response, requiredParameters, contentType });
     };
 };
