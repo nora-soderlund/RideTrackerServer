@@ -1,5 +1,3 @@
-import fs from "fs";
-
 import Server from "../../Server.js";
 import Database from "../../Database.js";
 
