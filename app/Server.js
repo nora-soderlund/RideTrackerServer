@@ -1,5 +1,7 @@
 import http from "http";
 
+import Database from "./Database.js";
+
 export default class Server {
     static server = null;
 
@@ -13,6 +15,31 @@ export default class Server {
 
     static async onRequest(request, response) {
         try {
+            request.user = {
+                guest: true
+            };
+
+            if(request.headers.authorization) {
+                const authorization = request.headers.authorization.split(' ');
+
+                if(authorization[0] != "Bearer") {
+                    response.writeHead(403);
+
+                    response.end();
+
+                    return;
+                }
+
+                const rows = await Database.queryAsync(`SELECT * FROM user_tokens WHERE id = ${Database.connection.escape(authorization[1])} LIMIT 1`);
+
+                if(rows.length) {
+                    request.user = {
+                        guest: false,
+                        id: rows[0].user
+                    };
+                }
+            }
+
             console.log(request.socket.remoteAddress + " > " + request.method + " " + request.url);
         
             const url = request.url.toLowerCase();

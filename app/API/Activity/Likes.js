@@ -15,8 +15,6 @@ Server.on("GET", "/api/activity/likes", async (request, response, parameters) =>
 
     return {
         success: true,
-        content: {
-            likes: rows[0].count
-        }
+        content: rows[0].count
     };
 }, [ "activity" ]);
