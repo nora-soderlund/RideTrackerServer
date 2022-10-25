@@ -5,7 +5,7 @@ import Server from "../../Server.js";
 import Database from "../../Database.js";
 
 Server.on("POST", "/api/user/register", async (request, response, parameters) => {
-    const rows = Database.queryAsync(`SELECT * FROM users WHERE email = ${Database.connection.escape(parameters.email)} LIMIT 1`);
+    const rows = await Database.queryAsync(`SELECT * FROM users WHERE email = ${Database.connection.escape(parameters.email)} LIMIT 1`);
 
     if(rows.length != 0)
         return { success: false, content: "E-mail address already belongs to an user!" };

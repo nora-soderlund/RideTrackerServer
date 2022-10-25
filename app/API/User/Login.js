@@ -5,7 +5,6 @@ import Server from "../../Server.js";
 import Database from "../../Database.js";
 
 Server.on("POST", "/api/user/login", async (request, response, parameters) => {
-    console.log(parameters.email);
     const rows = await Database.queryAsync(`SELECT * FROM users WHERE email = ${Database.connection.escape(parameters.email)} LIMIT 1`);
     
     if(rows.length == 0)
@@ -14,7 +13,7 @@ Server.on("POST", "/api/user/login", async (request, response, parameters) => {
     const match = await bcrypt.compare(parameters.password, rows[0].password);
     
     if(!match)
-        return reject(new ApiResponse(false, "Your credentials does not match!"));
+        return { success: false, content: "Your credentials does not match!" };
 
     const token = uuidv4();
 
