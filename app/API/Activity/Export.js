@@ -1,7 +1,5 @@
 import fs from "fs";
-
-import XmlBuilder from "../../XmlBuilder.js";
-import XmlElement from "../../XmlElement.js";
+import { XmlBuilder, XmlElement } from "@nora-soderlund/xmlbuilder";
 
 import Server from "../../Server.js";
 import Database from "../../Database.js";
