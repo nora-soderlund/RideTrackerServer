@@ -14,19 +14,7 @@
         "salt": 10
     },
 
-    "requests": [
-        "./app/API/Ping/PingRequest",
-        
-        "./app/API/User/UserRequest",
-        "./app/API/User/Register/UserRegisterRequest",
-        "./app/API/User/Login/UserLoginRequest",
-        "./app/API/User/Authenticate/UserAuthenticateRequest",
-    
-        "./app/API/Activity/ActivityRequest",
-        "./app/API/Activity/Map/ActivityMapRequest",
-        "./app/API/Activity/Summary/ActivitySummaryRequest",
-        "./app/API/Activity/Upload/ActivityUploadRequest",
-    
-        "./app/API/Feed/ActivitiesRequest"
-    ]
+    "google": {
+        "key": "AIzaSyA4nsjk4nQtsOH-ccq3F1PTWZPazrKylyc"
+    }
 }
