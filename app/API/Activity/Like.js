@@ -4,8 +4,6 @@ import Server from "../../Server.js";
 import Database from "../../Database.js";
 
 Server.on("POST", "/api/activity/like", async (request, response, parameters) => {
-    console.log(request.user);
-
     if(request.user.guest)
         return { success: false };
 
