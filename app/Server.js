@@ -7,7 +7,15 @@ export default class Server {
     static server = null;
 
     static listen(settings) {
-        this.server = http.createServer((...args) => this.onRequest(...args)).listen(settings.port);
+        const options = {};
+
+        if(fs.existsSync("./key.pem"))
+            options.key = fs.readFileSync("./key.pem");
+
+        if(fs.existsSync("./cert.pem"))
+            options.cert = fs.readFileSync("./cert.pem");
+
+        this.server = http.createServer(options, (...args) => this.onRequest(...args)).listen(settings.port);
 
         console.log("Listening to port " + settings.port);
     };
