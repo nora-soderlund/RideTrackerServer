@@ -1,0 +1,20 @@
+{
+    "server": {
+        "port": 8080
+    },
+
+    "database": {
+        "host": "127.0.0.1",
+        "user": "root",
+        "password": "password",
+        "database": "ridetracker"
+    },
+
+    "password": {
+        "salt": 10
+    },
+
+    "google": {
+        "key": ""
+    }
+}
