@@ -4,6 +4,7 @@ import "./API/Feed.js";
 
 import "./API/User.js";
 import "./API/User/Login.js";
+import "./API/User/Logout.js";
 import "./API/User/Register.js";
 import "./API/User/Authenticate.js";
 
