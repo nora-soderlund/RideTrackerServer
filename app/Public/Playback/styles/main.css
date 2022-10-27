@@ -1,0 +1,18 @@
+html, body {
+    min-height: 100%;
+    min-width: 100%;
+}
+
+body {
+    background-color: aliceblue;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+
+    position: absolute;
+    
+    left: 0;
+    top: 0;
+}

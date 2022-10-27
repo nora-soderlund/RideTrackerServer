@@ -1,4 +1,5 @@
 import http from "http";
+import fs from "fs";
 
 import Database from "./Database.js";
 
@@ -13,8 +14,42 @@ export default class Server {
 
     static requests = [];
 
+    static mimeTypes = {
+        ".svg": "image/svg+xml",
+        ".js": "text/javascript",
+        ".html": "text/html",
+        ".css": "text/css"
+    };
+
     static async onRequest(request, response) {
         try {
+            const url = request.url.toLowerCase();
+        
+            const queryIndex = url.indexOf('?');
+            const path = (queryIndex == -1)?(request.url):(request.url.substring(0, queryIndex));
+
+            if(path.includes('.')) {
+                if(fs.existsSync("./app/public/" + path)) {
+                    const extension = path.substring(path.indexOf('.'), path.length);
+
+                    console.log(extension);
+
+                    response.writeHead(200, "OK", {
+                        "Content-Type": Server.mimeTypes[extension]
+                    });
+
+                    response.end(fs.readFileSync("./app/public/" + path));
+
+                    return;
+                }   
+
+                response.writeHead(404, "File Not Found");
+
+                response.end();
+
+                return;
+            }
+
             request.user = {
                 guest: true
             };
@@ -41,10 +76,6 @@ export default class Server {
             }
 
             console.log(request.socket.remoteAddress + " > " + request.method + " " + request.url);
-        
-            const url = request.url.toLowerCase();
-            const queryIndex = url.indexOf('?');
-            const path = (queryIndex == -1)?(request.url):(request.url.substring(0, queryIndex));
 
             const listener = this.requests.find(x => x.method == request.method && x.path == path);
 
