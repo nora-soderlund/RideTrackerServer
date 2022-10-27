@@ -59,8 +59,8 @@ async function onMapReady() {
     const bounds = new google.maps.LatLngBounds();
 
     result.content.sections.forEach((section, index) => {
-        const path = section.map.map((coordinate) => {
-            const position = new google.maps.LatLng(coordinate.latitude, coordinate.longitude);
+        const path = section.coordinates.map((coordinate) => {
+            const position = new google.maps.LatLng(coordinate.coords.latitude, coordinate.coords.longitude);
             
             bounds.extend(position);
 
