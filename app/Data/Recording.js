@@ -37,12 +37,14 @@ export default class Recording {
 
     async updateSections() {
         return await Promise.all(this.data.sections.map(async (section) => {
+            const coordinates = section.coordinates.sort((start, finish) => start.timestamp - finish.timestamp);
+
             return {
                 start: section.start,
                 end: section.end,
 
-                map: await this.snapToRoads(section.coordinates),
-                coordinates: section.coordinates
+                map: await this.snapToRoads(coordinates),
+                coordinates: coordinates
             };
         }));
     };
