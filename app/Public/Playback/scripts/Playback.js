@@ -1,14 +1,16 @@
 class Playback {
-    constructor(element, activity, color) {
+    constructor(element, activity, color, background) {
         this.element = element;
         this.activity = activity;
         this.color = color;
+        this.background = background;
     };
 
     async startAsync() {
         this.data = await this.getActivityMapAsync();
 
         this.map = new google.maps.Map(this.element, {
+            backgroundColor: `#${this.background}`,
             mapId: "b0c4ef9d12f624c9",
             
             disableDefaultUI: true,
@@ -189,7 +191,7 @@ class Playback {
                 if(window.ReactNativeWebView && previousCoordinateIndex != index) {
                     previousCoordinateIndex = index;
 
-                    window.ReactNativeWebView.postMessage(JSON.stringify({ timestamp: current, index }));
+                    window.ReactNativeWebView.postMessage(JSON.stringify({ timestamp: current, section: 0, coordinate: index }));
                 }
 
                 timestamp = performance.now();
