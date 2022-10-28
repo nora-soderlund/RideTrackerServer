@@ -1,57 +1,17 @@
 const searchParams = new URLSearchParams(window.location.search);
 const activity = searchParams.get("activity");
 
-let map;
-
-var panPath = [];   // An array of points the current panning action will use
-var panQueue = [];  // An array of subsequent panTo actions to take
-var STEPS = 50;     // The number of steps that each panTo action will undergo
-
-function panTo(newLat, newLng) {
-  if (panPath.length > 0) {
-    // We are already panning...queue this up for next move
-    panQueue.push([newLat, newLng]);
-  } else {
-    // Lets compute the points we'll use
-    panPath.push("LAZY SYNCRONIZED LOCK");  // make length non-zero - 'release' this before calling setTimeout
-    var curLat = map.getCenter().lat();
-    var curLng = map.getCenter().lng();
-    var dLat = (newLat - curLat)/STEPS;
-    var dLng = (newLng - curLng)/STEPS;
-
-    for (var i=0; i < STEPS; i++) {
-      panPath.push([curLat + dLat * i, curLng + dLng * i]);
-    }
-    panPath.push([newLat, newLng]);
-    panPath.shift();      // LAZY SYNCRONIZED LOCK
-    setTimeout(doPan, 20);
-  }
-}
-
-function doPan() {
-  var next = panPath.shift();
-  if (next != null) {
-    // Continue our current pan action
-    map.panTo( new google.maps.LatLng(next[0], next[1]));
-    setTimeout(doPan, 20 );
-  } else {
-    // We are finished with this pan - check if there are any queue'd up locations to pan to 
-    var queued = panQueue.shift();
-    if (queued != null) {
-      panTo(queued[0], queued[1]);
-    }
-  }
-}
+let map = null;
+const mapElement = document.getElementById("map");
 
 async function onMapReady() {
     const response = await fetch(`/api/activity/map?id=${activity}`);
     const result = await response.json();
 
-    map = new google.maps.Map(document.getElementById("map"), {
-        mapId: "b8437b752890b203",
-        heading: 320,
-        tilt: 45,
-        zoom: 16,
+    map = new google.maps.Map(mapElement, {
+        mapId: "b0c4ef9d12f624c9",
+        
+        zoom: 16
     });
 
     let paths = [];
@@ -82,14 +42,46 @@ async function onMapReady() {
 
     map.fitBounds(bounds);
 
-    let index = 0;
+	setTimeout(() => onMapLoad(result.content), 1000);
+};
 
-    function onRender() {
+function onMapLoad(data) {
+	const section = data.sections[0];
 
-        window.requestAnimationFrame(onRender);
-    };
+	let index = 0;
+	let start = null;
 
-    window.requestAnimationFrame(onRender);
-}
+	map.setZoom(18);
+	map.setTilt(90);
+
+	function onMapIdle() {
+		window.requestAnimationFrame(onMapRender);
+	};
+
+	map.addListener("idle", onMapIdle);
+
+	function onMapRender(time) {
+		if(!start) {
+			const coordinate = section.coordinates[index];
+
+			console.log(index, (time - start), coordinate);
+
+			start = time;
+
+			map.panTo(new google.maps.LatLng(coordinate.coords.latitude, coordinate.coords.longitude));
+			map.setHeading(coordinate.coords.heading);
+
+			return;
+		}
+			
+		index++;
+		start = null;
+
+		if(index != section.coordinates.length)
+			return window.requestAnimationFrame(onMapRender);
+	};
+
+	window.requestAnimationFrame(onMapRender);
+};
 
 window.onMapReady = onMapReady;
