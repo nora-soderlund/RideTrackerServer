@@ -1,12 +1,14 @@
 const searchParams = new URLSearchParams(window.location.search);
 const activity = searchParams.get("activity");
 
-let map = null;
+let map = null, data = null;
 const mapElement = document.getElementById("map");
 
 async function onMapReady() {
     const response = await fetch(`/api/activity/map?id=${activity}`);
     const result = await response.json();
+
+    data = result.content;
 
     map = new google.maps.Map(mapElement, {
         mapId: "b0c4ef9d12f624c9",
@@ -40,48 +42,68 @@ async function onMapReady() {
         paths = paths.concat(path);
     });
 
-    map.fitBounds(bounds);
+    map.addListener("idle", onMapLoad);
 
-	setTimeout(() => onMapLoad(result.content), 1000);
+    map.fitBounds(bounds);
 };
 
-function onMapLoad(data) {
-	const section = data.sections[0];
+function onMapLoad() {
+    google.maps.event.clearListeners(map, "idle");
 
-	let index = 0;
-	let start = null;
+    setTimeout(() => {
+        const section = data.sections[0];
 
-	map.setZoom(18);
-	map.setTilt(90);
+        map.addListener("idle", onPanFinish);
 
-	function onMapIdle() {
-		window.requestAnimationFrame(onMapRender);
-	};
+        map.setZoom(16);
+        map.setTilt(90);
+        map.panTo(new google.maps.LatLng(section.coordinates[0].coords.latitude, section.coordinates[0].coords.longitude));
+        map.setHeading(section.coordinates[0].coords.heading);
+    }, 2000);
+};
 
-	map.addListener("idle", onMapIdle);
+function onPanFinish() {
+    google.maps.event.clearListeners(map, "idle");
 
-	function onMapRender(time) {
-		if(!start) {
-			const coordinate = section.coordinates[index];
+    setTimeout(() => {
+        map.addListener("idle", onPanReady);
 
-			console.log(index, (time - start), coordinate);
+        map.setZoom(18);
+    }, 1000);
+};
 
-			start = time;
+function onPanReady() {
+    google.maps.event.clearListeners(map, "idle");
 
-			map.panTo(new google.maps.LatLng(coordinate.coords.latitude, coordinate.coords.longitude));
-			map.setHeading(coordinate.coords.heading);
+    setTimeout(() => {
+        let index = 0;
+        let ready = true;
+        
+        function onMapIdle() {
+            ready = true;
+        };
+    
+        map.addListener("heading_changed", onMapIdle);
+    
+        function onMapRender(time) {
+            const section = data.sections[0];
 
-			return;
-		}
-			
-		index++;
-		start = null;
+            const coordinate = section.coordinates[index];
 
-		if(index != section.coordinates.length)
-			return window.requestAnimationFrame(onMapRender);
-	};
+            console.log(index, coordinate);
 
-	window.requestAnimationFrame(onMapRender);
+            map.moveCamera({
+                center: new google.maps.LatLng(coordinate.coords.latitude, coordinate.coords.longitude),
+                heading: coordinate.coords.heading
+            });
+                
+            index++;
+    
+            window.requestAnimationFrame(onMapRender);
+        };
+    
+        window.requestAnimationFrame(onMapRender);
+    }, 2000);
 };
 
 window.onMapReady = onMapReady;
