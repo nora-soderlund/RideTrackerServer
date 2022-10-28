@@ -57,8 +57,8 @@ function onMapLoad() {
 
         map.setZoom(16);
         map.setTilt(90);
-        map.panTo(new google.maps.LatLng(section.coordinates[0].coords.latitude, section.coordinates[0].coords.longitude));
-        map.setHeading(section.coordinates[0].coords.heading);
+        map.panTo(new google.maps.LatLng(section.coordinates[20].coords.latitude, section.coordinates[20].coords.longitude));
+        map.setHeading(section.coordinates[20].coords.heading);
     }, 2000);
 };
 
@@ -76,8 +76,9 @@ function onPanReady() {
     google.maps.event.clearListeners(map, "idle");
 
     setTimeout(() => {
-        let index = 0;
         let ready = true;
+        const section = data.sections[0];
+        const start = performance.now();
         
         function onMapIdle() {
             ready = true;
@@ -86,18 +87,35 @@ function onPanReady() {
         map.addListener("heading_changed", onMapIdle);
     
         function onMapRender(time) {
-            const section = data.sections[0];
+            const elapsed = (performance.now() - start) * 20;
 
+            const current = section.coordinates[20].timestamp + elapsed;
+
+            const index = section.coordinates.findIndex((coordinate) => coordinate.timestamp >= current);
             const coordinate = section.coordinates[index];
 
-            console.log(index, coordinate);
+            if(index - 1 >= 0) {
+                const previousCoordinate = section.coordinates[index - 1];
 
-            map.moveCamera({
-                center: new google.maps.LatLng(coordinate.coords.latitude, coordinate.coords.longitude),
-                heading: coordinate.coords.heading
-            });
-                
-            index++;
+                const duration = current - previousCoordinate.timestamp;
+
+                const difference = previousCoordinate.timestamp - coordinate.timestamp;
+                const differenceLatitude = previousCoordinate.coords.latitude - coordinate.coords.latitude;
+                const differenceLongitude = previousCoordinate.coords.longitude - coordinate.coords.longitude;
+                const differenceHeading = previousCoordinate.coords.heading - coordinate.coords.heading;
+
+                const multiplier = duration / difference;
+
+                const center = new google.maps.LatLng(
+                    previousCoordinate.coords.latitude + (differenceLatitude * multiplier),
+                    previousCoordinate.coords.longitude + (differenceLongitude * multiplier)
+                    );
+
+                map.moveCamera({
+                    center,
+                    heading: previousCoordinate.coords.heading + (differenceHeading * multiplier)
+                });
+            }
     
             window.requestAnimationFrame(onMapRender);
         };
