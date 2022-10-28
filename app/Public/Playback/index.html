@@ -8,7 +8,24 @@
     <body>
         <div id="map"></div>
         
-        <script type="text/javascript" src="scripts/index.js" defer></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4nsjk4nQtsOH-ccq3F1PTWZPazrKylyc&callback=onMapReady&v=beta" defer></script>
+        <script type="text/javascript" src="scripts/Playback.js"></script>
+        
+        <script type="text/javascript">
+            function onMapInit() {
+                const element = document.getElementById("map");
+                
+                const searchParams = new URLSearchParams(window.location.search);
+                const activity = searchParams.get("activity");
+                const color = searchParams.get("color");
+
+                const playback = new Playback(element, activity, color);
+
+                playback.startAsync();
+            };
+
+            window.onMapInit = onMapInit;
+        </script>
+
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4nsjk4nQtsOH-ccq3F1PTWZPazrKylyc&callback=onMapInit&v=beta" defer></script>
     </body>
 </html>
