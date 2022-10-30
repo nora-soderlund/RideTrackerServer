@@ -1,3 +1,28 @@
+// Converts from degrees to radians.
+function toRadians(degrees) {
+    return degrees * Math.PI / 180;
+  };
+   
+  // Converts from radians to degrees.
+  function toDegrees(radians) {
+    return radians * 180 / Math.PI;
+  }
+  
+  
+  function bearing(startLat, startLng, destLat, destLng){
+    startLat = toRadians(startLat);
+    startLng = toRadians(startLng);
+    destLat = toRadians(destLat);
+    destLng = toRadians(destLng);
+  
+    y = Math.sin(destLng - startLng) * Math.cos(destLat);
+    x = Math.cos(startLat) * Math.sin(destLat) -
+          Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
+    brng = Math.atan2(y, x);
+    brng = toDegrees(brng);
+    return (brng + 360) % 360;
+  }
+
 class Playback {
     constructor(element, activity, color, background) {
         this.element = element;
@@ -122,7 +147,7 @@ class Playback {
             this.map.setZoom(16);
             this.map.setTilt(90);
             this.map.panTo(new google.maps.LatLng(section.coordinates[20].coords.latitude, section.coordinates[20].coords.longitude));
-            this.map.setHeading(section.coordinates[20].coords.heading);
+            //this.map.setHeading(section.coordinates[20].coords.heading);
         });
     };
 
@@ -144,6 +169,7 @@ class Playback {
         const start = performance.now();
         let delays = 0, timestamp = null;
         let previousCoordinateIndex = null;
+        let heading = 0;
 
         this.map.addListener("idle", () => {
             if(timestamp)
@@ -153,7 +179,7 @@ class Playback {
         });
     
         const onMapRender = () => {
-            const elapsed = ((performance.now() - start) - delays) * 40;
+            const elapsed = ((performance.now() - start) - delays) * 60;
 
             const current = section.coordinates[20].timestamp + elapsed;
 
@@ -183,8 +209,58 @@ class Playback {
                     center
                 };
 
-                if(previousCoordinate.coords.speed >= 2 && coordinate.coords.speed >= 2)
-                    camera.heading = previousCoordinate.coords.heading + (differenceHeading * multiplier);
+                /*if(previousCoordinate.coords.speed >= 2 && coordinate.coords.speed >= 2) {
+                    let headingDifferences = 0;
+
+                    for(let headingIndex = index; headingIndex < index + 10; headingIndex++) {
+                        const headingCoordinate = section.coordinates[headingIndex];
+
+                        headingDifferences += coordinate.coords.heading - headingCoordinate.coords.heading;
+                    }
+
+                    console.log({
+                        headingDifferences
+                    });
+                    
+                    if(headingDifferences < 90)
+                        camera.heading = previousCoordinate.coords.heading + (differenceHeading * multiplier);
+                }*/
+
+                // let's iterate forwards in the coordinates array until we've gathered a difference of 20km/h, meaning we've _probably_ not stood still
+                // forever and we've advanced 5 meters. then use this coordinate's latitude and longitude to calculate the bearing from the currrent coordinate
+                // and only update the camera heading if it differs by 2 degrees; to allow for smoothness...and to avoid google maps platform lag (rendering
+                // buildings and changing the heading causes extreme lag!)
+
+                // tweak these settings with caution
+
+                let bearingDifference = 0, bearingIndex = index + 1;
+
+                while(bearingDifference < 20 / 3.6) {
+                    bearingDifference += section.coordinates[bearingIndex].coords.speed;
+
+                    bearingIndex++;
+                }
+
+                let bearingCoordinate = section.coordinates[bearingIndex];
+
+                const bearingHeading = bearing(coordinate.coords.latitude, coordinate.coords.longitude, bearingCoordinate.coords.latitude, bearingCoordinate.coords.longitude);
+
+                if(Math.abs(heading - bearingHeading) > 2)
+                    camera.heading = heading = bearingHeading;
+
+                /*
+                
+
+                const headings = section.coordinates.splice(index - 5, 10).map((coordinate) => coordinate.coords.heading);
+                const headingSum = headings.reduce((a, b) => a + b, 0);
+                const headingAverage = (headingSum / headings.length) || 0;
+
+                if(heading == null)
+                    camera.heading = heading = headingAverage;
+                else if(previousCoordinate.coords.speed >= 2 && coordinate.coords.speed >= 2) {
+                    if(Math.abs(headingAverage - previousCoordinate.coords.heading) > 90)
+                        camera.heading = heading = headingAverage;
+                }*/
 
                 this.map.moveCamera(camera);
 
