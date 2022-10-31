@@ -3,7 +3,7 @@ import fs from "fs";
 import global from "./../../global.js";
 
 export default class Recording {
-    static version = "1.0.0";
+    static version = "1.0.1";
 
     constructor(id) {
         this.id = id;
@@ -17,8 +17,11 @@ export default class Recording {
 
         this.manifest = JSON.parse(fs.readFileSync("./app/uploads/activities/manifests/" + this.id + ".json"));
         
-        if(this.manifest.meta.version != Recording.version)
+        if(this.manifest.meta.version != Recording.version) {
+            fs.rmSync("./app/uploads/activities/manifests/" + this.id + ".json");
+            
             await this.update(this.id);
+        }
 
         return this.manifest;
     };
