@@ -22,20 +22,23 @@ class Playback {
 
         this.createMapBounds();
 
-        await this.fitMapToBoundsAsync();
+        if(!window.isReactNativeApp) {
+            await this.fitMapToBoundsAsync();
 
-        await this.timeoutAsync(2000);
+            await this.timeoutAsync(2000);
 
-        await this.focusMapToStartAsync();
+            await this.focusMapToStartAsync();
 
-        await this.timeoutAsync(1000);
+            await this.timeoutAsync(1000);
 
-        await this.zoomMapToStartAsync();
+            await this.zoomMapToStartAsync();
 
-        await this.timeoutAsync(2000);
+            await this.timeoutAsync(2000);
 
-        if(!window.isReactNativeApp)
             await this.playback();
+        }
+        else
+            window.ReactNativeWebView.postMessage(JSON.stringify({ event: "ready" })
     };
 
     async getActivityMapAsync() {
@@ -231,7 +234,7 @@ class Playback {
                 if(window.ReactNativeWebView && previousCoordinateIndex != index) {
                     previousCoordinateIndex = index;
 
-                    window.ReactNativeWebView.postMessage(JSON.stringify({ timestamp: current, section: 0, coordinate: index }));
+                    window.ReactNativeWebView.postMessage(JSON.stringify({ event: "frame", timestamp: current, section: 0, coordinate: index }));
                 }
 
                 timestamp = performance.now();
