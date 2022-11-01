@@ -19,9 +19,9 @@
                 const color = searchParams.get("color");
                 const background = searchParams.get("background");
 
-                const playback = new Playback(element, activity, color, background);
+                window.playback = new Playback(element, activity, color, background);
 
-                playback.startAsync();
+                window.playback.startAsync();
             };
 
             window.onMapInit = onMapInit;
