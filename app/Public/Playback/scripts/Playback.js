@@ -22,7 +22,7 @@ class Playback {
 
         this.createMapBounds();
 
-        if(!window.isReactNativeApp) {
+        if(!window.ReactNativeWebView) {
             await this.fitMapToBoundsAsync();
 
             await this.timeoutAsync(2000);
@@ -38,7 +38,7 @@ class Playback {
             await this.playback();
         }
         else
-            window.ReactNativeWebView.postMessage(JSON.stringify({ event: "ready" })
+            window.ReactNativeWebView.postMessage(JSON.stringify({ event: "ready" });
     };
 
     async getActivityMapAsync() {
