@@ -38,7 +38,7 @@ class Playback {
             await this.playback();
         }
         else
-            window.ReactNativeWebView.postMessage(JSON.stringify({ event: "ready" });
+            window.ReactNativeWebView.postMessage(JSON.stringify({ event: "ready" }));
     };
 
     async getActivityMapAsync() {
