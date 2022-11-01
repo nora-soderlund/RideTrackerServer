@@ -16,3 +16,5 @@ import "./API/Activity/Export.js";
 import "./API/Activity/Upload.js";
 import "./API/Activity/Comment.js";
 import "./API/Activity/Comments.js";
+
+import "./API/Profile/Activity.js";
