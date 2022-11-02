@@ -3,6 +3,7 @@ import "./API/Ping.js";
 import "./API/Feed.js";
 
 import "./API/User.js";
+import "./API/User/Bikes.js";
 import "./API/User/Login.js";
 import "./API/User/Logout.js";
 import "./API/User/Register.js";
@@ -18,3 +19,5 @@ import "./API/Activity/Comment.js";
 import "./API/Activity/Comments.js";
 
 import "./API/Profile/Activities.js";
+
+import "./API/Bike.js";

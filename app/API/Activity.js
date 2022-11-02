@@ -7,12 +7,15 @@ Server.on("GET", "/api/activity", async (request, response, parameters) => {
     if(rows.length == 0)
         return { success: false, content: "No activity found!" };
 
+    const row = rows[0];
+
     return {
         success: true,
         content: {
-            id: rows[0].id,
-            user: rows[0].user,
-            timestamp: rows[0].timestamp
+            id: row.id,
+            user: row.user,
+            bike: row.bike,
+            timestamp: row.timestamp
         }
     };
 }, [ "id" ]);
