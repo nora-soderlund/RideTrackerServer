@@ -21,7 +21,7 @@ import "./API/Activity/Upload.js";
 import "./API/Activity/Comment.js";
 import "./API/Activity/Comments.js";
 
-import "./API/Profile/Activities.js";
+import "./API/User/Activities.js";
 
 import "./API/Bike.js";
 import "./API/Bike/Create.js";
