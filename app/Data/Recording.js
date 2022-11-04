@@ -5,7 +5,7 @@ import global from "./../../global.js";
 import Coordinates from "./Coordinates.js";
 
 export default class Recording {
-    static version = "1.0.2";
+    static version = "1.0.8";
 
     constructor(id) {
         this.id = id;
@@ -126,5 +126,56 @@ export default class Recording {
         }
 
         return snappedPoints;
+    };
+
+    getDistance() {
+        let distance = 0;
+
+        this.manifest.sections.forEach((section) => {
+            const coordinates = section.coordinates;
+
+            for(let index = 1; index < coordinates.length; index++)
+                distance += Coordinates.getDistance(coordinates[index - 1].coords, coordinates[index].coords);
+        });
+
+        const distanceInKm = distance / 1000;
+
+        return Math.round(distanceInKm * 10) / 10;
+    };
+
+    getSpeed() {
+        let speeds = [];
+
+        this.manifest.sections.forEach((section) => {
+            section.coordinates.forEach((coordinate) => {
+                speeds.push(coordinate.coords.speed);
+            });
+        });
+
+        if(speeds.length == 0)
+            return 0;
+
+        const averageMetersPerSecond = speeds.reduce((a, b) => (a + b)) / speeds.length;
+
+        const averageKilometersPerHour = averageMetersPerSecond * 3.6;
+
+        return Math.round(averageKilometersPerHour * 10) / 10;
+    };
+
+    getElevation() {
+        let elevation = 0;
+
+        this.manifest.sections.forEach((section) => {
+            const coordinates = section.coordinates;
+
+            for(let index = 1; index < coordinates.length; index++) {
+                const difference = (coordinates[index].coords.altitude - coordinates[index - 1].coords.altitude) / Math.max(coordinates[index].coords.altitudeAccuracy, coordinates[index - 1].coords.altitudeAccuracy);
+
+                if(difference >= 0)
+                    elevation += difference;
+            }
+        });
+
+        return Math.round(elevation);
     };
 };

@@ -94,7 +94,7 @@ export default class Server {
 
             let result = null;
 
-            if(listener.method == "GET" && queryIndex != -1) {
+            if((listener.method == "GET" || listener.method == "DELETE") && queryIndex != -1) {
                 const query = url.substr(queryIndex + 1, url.length).split('&');
 
                 let parameters = {};

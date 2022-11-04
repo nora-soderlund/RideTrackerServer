@@ -19,3 +19,24 @@ Server.on("GET", "/api/activity", async (request, response, parameters) => {
         }
     };
 }, [ "id" ]);
+
+Server.on("DELETE", "/api/activity", async (request, response, parameters) => {
+    if(request.user.guest)
+        return { success: false };
+
+    const rows = await Database.queryAsync(`SELECT * FROM activities WHERE id = ${Database.connection.escape(parameters.activity)} LIMIT 1`);
+
+    if(rows.length == 0)
+        return { success: false };
+
+    const row = rows[0];
+
+    if(row.user != request.user.id)
+        return { success: false };
+
+    await Database.queryAsync(`DELETE FROM activities WHERE id = ${Database.connection.escape(row.id)}`);
+
+    return {
+        success: true
+    };
+}, [ "activity" ]);
