@@ -2,6 +2,8 @@ import "./API/Ping.js";
 
 import "./API/Feed.js";
 
+import "./API/Upload.js";
+
 import "./API/User.js";
 import "./API/User/Bikes.js";
 import "./API/User/Avatar.js";
