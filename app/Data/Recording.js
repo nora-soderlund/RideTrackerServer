@@ -2,8 +2,10 @@ import fs from "fs";
 
 import global from "./../../global.js";
 
+import Coordinates from "./Coordinates.js";
+
 export default class Recording {
-    static version = "1.0.1";
+    static version = "1.0.2";
 
     constructor(id) {
         this.id = id;
@@ -46,29 +48,30 @@ export default class Recording {
                 start: section.start,
                 end: section.end,
 
-                map: await this.snapToRoads(coordinates),
-                coordinates: coordinates
+                //map: await this.snapToRoads(coordinates),
+                coordinates: await this.updateCoordinates(coordinates)
             };
         }));
     };
 
-    getCoordinateDistance(start, end) {
-        let R = 6371; // Radius of the earth in km
-        let dLat = this.degreesToRadius(end.latitude - start.latitude);  // this.degreesToRadius below
-        let dLon = this.degreesToRadius(end.longitude - start.longitude);
+    async updateCoordinates(coordinates) {
+        coordinates = coordinates.map((coordinate) => {
+            return {
+                timestamp: coordinate.timestamp,
 
-        let a = 
-            Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(this.degreesToRadius(start.latitude)) * Math.cos(this.degreesToRadius(end.latitude)) * 
-            Math.sin(dLon/2) * Math.sin(dLon/2); 
-        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-        let d = R * c; // Distance in km
+                coords: {
+                    altitude: coordinate.coords.altitude,
+                    heading: coordinate.coords.heading,
+                    altitudeAccuracy: coordinate.coords.altitudeAccuracy,
+                    latitude: coordinate.coords.latitude,
+                    speed: coordinate.coords.speed,
+                    longitude: coordinate.coords.longitude,
+                    accuracy: coordinate.coords.accuracy
+                }
+            };
+        });
 
-        return d * 1000;
-    };
-      
-    degreesToRadius(degree) {
-        return degree * (Math.PI / 180.0);
+        return await this.snapToRoads(coordinates);
     };
 
     async snapToRoads(coordinates) {
@@ -90,7 +93,7 @@ export default class Recording {
 
             const path = page.map((coordinate) => `${coordinate.coords.latitude},${coordinate.coords.longitude}`).join('|');
 
-            let response = await fetch(`https://roads.googleapis.com/v1/snapToRoads?path=${path}&interpolate=true&key=${global.config.google.key}`);
+            let response = await fetch(`https://roads.googleapis.com/v1/snapToRoads?path=${path}&interpolate=false&key=${global.config.google.key}`);
             let result = await response.json();
 
             const points = result.snappedPoints;
@@ -100,8 +103,23 @@ export default class Recording {
                 if(offset == 0 || point.originalIndex >= overlap - 1)
                     passedOverlap = true;
                 
-                if(passedOverlap)
-                    snappedPoints.push(point.location);
+                if(passedOverlap) {
+                    const originalCoordinate = page[point.originalIndex];
+
+                    if(Coordinates.getDistance(originalCoordinate.coords, point.location) < originalCoordinate.coords.acccuracy) {
+                        snappedPoints.push({
+                            ...originalCoordinate,
+
+                            road: {
+                                latitude: point.location.latitude,
+                                longitude: point.location.longitude
+                            }
+                        });
+                    }
+                    else {
+                        snappedPoints.push(originalCoordinate);
+                    }
+                }
             });
     
             offset = upperBound;
