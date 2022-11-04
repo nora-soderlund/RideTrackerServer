@@ -11,6 +11,8 @@ import "./API/User/Login.js";
 import "./API/User/Logout.js";
 import "./API/User/Register.js";
 import "./API/User/Authenticate.js";
+import "./API/User/Activities.js";
+import "./API/User/Comments.js";
 
 import "./API/Activity.js";
 import "./API/Activity/Map.js";
@@ -20,8 +22,6 @@ import "./API/Activity/Export.js";
 import "./API/Activity/Upload.js";
 import "./API/Activity/Comment.js";
 import "./API/Activity/Comments.js";
-
-import "./API/User/Activities.js";
 
 import "./API/Bike.js";
 import "./API/Bike/Create.js";
