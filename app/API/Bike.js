@@ -1,3 +1,5 @@
+import global from "../../global.js";
+
 import Server from "../Server.js";
 import Database from "../Database.js";
 
@@ -15,7 +17,7 @@ Server.on("GET", "/api/bike", async (request, response, parameters) => {
         content: {
             user: row.user,
             name: row.name,
-            image: row.image,
+            image: global.config.server.domain + "/" + (row.image ?? "defaults/bike.png"),
             brand: row.brand,
             model: row.model,
             year: row.year,

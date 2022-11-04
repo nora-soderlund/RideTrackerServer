@@ -24,3 +24,4 @@ import "./API/Activity/Comments.js";
 import "./API/Profile/Activities.js";
 
 import "./API/Bike.js";
+import "./API/Bike/Create.js";

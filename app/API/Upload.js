@@ -1,14 +1,14 @@
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 
-import Server from "../../Server.js";
-import Database from "../../Database.js";
+import Server from "../Server.js";
+import Database from "../Database.js";
 
 Server.on("PUT", "/api/upload", async (request, response, body) => {
     if(request.user.guest)
         return { success: false };
 
-    const path = request.user.id + "/";
+    const path = "uploads" + "/" + request.user.id + "/";
 
     if(!fs.existsSync("./app/public/" + path))
         fs.mkdirSync("./app/public/" + path);
