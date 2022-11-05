@@ -17,9 +17,9 @@
                 const searchParams = new URLSearchParams(window.location.search);
                 const activity = searchParams.get("activity");
                 const color = searchParams.get("color");
-                const background = searchParams.get("background");
+                const type = searchParams.get("type");
 
-                window.playback = new Playback(element, activity, color, background);
+                window.playback = new Playback(element, activity, type, color);
 
                 window.playback.startAsync();
             };

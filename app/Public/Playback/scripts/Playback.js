@@ -1,18 +1,18 @@
 class Playback {
     static startIndex = 1;
 
-    constructor(element, activity, color, background) {
+    constructor(element, activity, type, color) {
         this.element = element;
         this.activity = activity;
+        this.type = type;
         this.color = color;
-        this.background = background;
     };
 
     async startAsync() {
         this.data = await this.getActivityMapAsync();
 
         this.map = new google.maps.Map(this.element, {
-            backgroundColor: `#${this.background}`,
+            backgroundColor: "#000",
             mapId: "b0c4ef9d12f624c9",
             
             disableDefaultUI: true,
@@ -125,7 +125,10 @@ class Playback {
             const section = this.data.sections[0];
 
             this.map.setZoom(16);
-            this.map.setTilt(90);
+    
+            if(this.type == "3d")
+                this.map.setTilt(90);
+    
             this.map.panTo(new google.maps.LatLng(section.coordinates[Playback.startIndex].coords.latitude, section.coordinates[Playback.startIndex].coords.longitude));
             this.map.setHeading(section.coordinates[Playback.startIndex].coords.heading);
         });
