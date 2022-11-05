@@ -2,3 +2,5 @@
 /config.json
 *.pem
 /app/uploads
+/logs
+/documents

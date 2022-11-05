@@ -28,3 +28,5 @@ import "./API/Activity/Comments.js";
 import "./API/Bike.js";
 import "./API/Bike/Create.js";
 import "./API/Bike/Stats.js";
+
+import "./API/Routes/Draw.js";
