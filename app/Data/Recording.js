@@ -5,7 +5,7 @@ import global from "./../../global.js";
 import Coordinates from "./Coordinates.js";
 
 export default class Recording {
-    static version = "1.0.8";
+    static version = "1.0.9";
 
     constructor(id) {
         this.id = id;
@@ -106,7 +106,9 @@ export default class Recording {
                 if(passedOverlap) {
                     const originalCoordinate = page[point.originalIndex];
 
-                    if(Coordinates.getDistance(originalCoordinate.coords, point.location) < originalCoordinate.coords.acccuracy) {
+                    const distance = Coordinates.getDistance(originalCoordinate.coords, point.location);
+
+                    if(distance < originalCoordinate.coords.accuracy) {
                         snappedPoints.push({
                             ...originalCoordinate,
 
