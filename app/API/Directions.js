@@ -26,7 +26,9 @@ Server.on("GET", "/api/directions", async (request, response, parameters) => {
         success: true,
 
         content: {
-            sections
+            sections,
+            distance: row.distance,
+            duration: row.duration
         }
     };
 }, [ "directions" ]);

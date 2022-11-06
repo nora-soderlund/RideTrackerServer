@@ -26,9 +26,18 @@ Server.on("POST", "/api/directions/draw", async (request, response, body) => {
         mode: "bicycling"
     });
 
+    let distance = 0, duration = 0;
+
+    directions.routes.forEach((route) => {
+        route.legs.forEach((leg) => {
+            distance += leg.distance.value;
+            duration += leg.duration.value;
+        });
+    });
+
     const id = uuidv4();
 
-    await Database.queryAsync(`INSERT INTO directions (id, user, timestamp) VALUES (${Database.connection.escape(id)}, ${Database.connection.escape(request.user.id)}, ${Database.connection.escape(Date.now())})`);
+    await Database.queryAsync(`INSERT INTO directions (id, user, distance, duration, timestamp) VALUES (${Database.connection.escape(id)}, ${Database.connection.escape(request.user.id)}, ${Database.connection.escape(distance)}, ${Database.connection.escape(duration)}, ${Database.connection.escape(Date.now())})`);
 
     fs.writeFileSync(`./documents/directions/${id}.json`, JSON.stringify(directions));
 
