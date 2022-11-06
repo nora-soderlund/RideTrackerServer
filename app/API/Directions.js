@@ -27,6 +27,7 @@ Server.on("GET", "/api/directions", async (request, response, parameters) => {
 
         content: {
             sections,
+            summary: row.summary,
             distance: row.distance,
             duration: row.duration
         }
