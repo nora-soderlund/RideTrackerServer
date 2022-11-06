@@ -6,9 +6,9 @@ import fs from "fs";
 import Server from "../../Server.js";
 import Database from "../../Database.js";
 
-import { Directions, Roads, Geocoding } from "./../../Google/Google.js";
+import { Directions, Roads, Geocoding } from "../../Google/Google.js";
 
-Server.on("POST", "/api/routes/draw", async (request, response, body) => {
+Server.on("POST", "/api/directions/draw", async (request, response, body) => {
     let places = [];
 
     for(let index = 0; index < body.coordinates.length; index++) {
@@ -28,9 +28,7 @@ Server.on("POST", "/api/routes/draw", async (request, response, body) => {
 
     const id = uuidv4();
 
-    const name = "tba";
-
-    await Database.queryAsync(`INSERT INTO routes (id, user, name, timestamp) VALUES (${Database.connection.escape(id)}, ${Database.connection.escape(request.user.id)}, ${Database.connection.escape(name)}, ${Database.connection.escape(Date.now())})`);
+    await Database.queryAsync(`INSERT INTO directions (id, user, timestamp) VALUES (${Database.connection.escape(id)}, ${Database.connection.escape(request.user.id)}, ${Database.connection.escape(Date.now())})`);
 
     fs.writeFileSync(`./documents/directions/${id}.json`, JSON.stringify(directions));
 
