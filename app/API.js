@@ -30,5 +30,8 @@ import "./API/Bike.js";
 import "./API/Bike/Create.js";
 import "./API/Bike/Stats.js";
 
+import "./API/Route.js";
+import "./API/Route/Create.js";
+
 import "./API/Directions.js";
 import "./API/Directions/Draw.js";
