@@ -1,0 +1,33 @@
+import fs from "fs";
+
+import polylineCodec from "@googlemaps/polyline-codec";
+const { decode } = polylineCodec;
+
+import global from "../../global.js";
+
+import Server from "../Server.js";
+import Database from "../Database.js";
+
+Server.on("GET", "/api/route", async (request, response, parameters) => {
+    const rows = await Database.queryAsync(`SELECT * FROM routes WHERE id = ${Database.connection.escape(parameters.route)} LIMIT 1`);
+    
+    if(rows.length == 0)
+        return { success: false };
+
+    const row = rows[0];
+
+    const directions = JSON.parse(fs.readFileSync(`./documents/directions/${row.id}.json`));
+
+    const sections = directions.routes.map((route) => {
+        return decode(route.overview_polyline.points, 5).map((points) => { return { latitude: points[0], longitude: points[1] } });
+    });
+
+
+    return {
+        success: true,
+
+        content: {
+            sections
+        }
+    };
+}, [ "route" ]);

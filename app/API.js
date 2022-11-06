@@ -7,6 +7,7 @@ import "./API/Upload.js";
 import "./API/User.js";
 import "./API/User/Activity.js";
 import "./API/User/Bikes.js";
+import "./API/User/Routes.js";
 import "./API/User/Avatar.js";
 import "./API/User/Login.js";
 import "./API/User/Logout.js";
@@ -29,4 +30,5 @@ import "./API/Bike.js";
 import "./API/Bike/Create.js";
 import "./API/Bike/Stats.js";
 
+import "./API/Route.js";
 import "./API/Routes/Draw.js";
