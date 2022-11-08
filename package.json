@@ -1,11 +1,12 @@
 {
-  "name": "biketrackerserver",
+  "name": "ridetrackerserver",
   "version": "1.0.0",
   "description": "",
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "npx eslint app/ & node index.js"
+    "eslint": "npx eslint app/",
+    "start": "nodemon app/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -20,6 +21,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.26.0"
+    "eslint": "^8.26.0",
+    "nodemon": "^2.0.20"
   }
 }
