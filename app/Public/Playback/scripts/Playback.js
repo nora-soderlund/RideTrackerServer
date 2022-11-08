@@ -42,7 +42,7 @@ class Playback {
     };
 
     async getActivityMapAsync() {
-        const response = await fetch(`/api/activity/map?id=${this.activity}`);
+        const response = await fetch(`/api/v1/activity/map?id=${this.activity}`);
         const result = await response.json();
 
         return result.content;

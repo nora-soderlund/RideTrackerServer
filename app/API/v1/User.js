@@ -1,0 +1,22 @@
+import Server from "./../../Server.js";
+import Database from "./../../Database.js";
+
+import global from "./../../../global.js";
+
+Server.on("GET", "/api/v1/user", async (request, response, parameters) => {
+    const rows = await Database.queryAsync(`SELECT * FROM users WHERE id = ${Database.connection.escape(parameters.id)} LIMIT 1`);
+    
+    if(rows.length == 0)
+        return { success: false };
+
+    return {
+        success: true,
+
+        content: {
+            id: rows[0].id,
+            slug: rows[0].slug,
+            name: rows[0].firstname + " " + rows[0].lastname,
+            avatar: global.config.server.domain + "/avatars/" + (rows[0].avatar ?? "default.jpg")
+        }
+    };
+});
