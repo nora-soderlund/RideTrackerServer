@@ -2,6 +2,8 @@
 /config.json
 *.pem
 /app/uploads
+/app/public/uploads
+/app/public/avatars
 /logs
 /documents
 /config.*.json
