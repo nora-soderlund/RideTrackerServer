@@ -7,7 +7,7 @@ import Server from "./app/Server.js";
 
 const argument = process.argv.find((x) => x.toLowerCase().startsWith("config="));
 
-global.config = JSON.parse(fs.readFileSync((argument)?(argument):("./config.json")));
+global.config = JSON.parse(fs.readFileSync((argument)?(argument.substring(argument.indexOf('.'))):("./config.json")));
 
 import "./app/API.js";
 import "./app/Playback.js";

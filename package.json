@@ -6,7 +6,9 @@
   "main": "index.js",
   "scripts": {
     "eslint": "npx eslint app/",
-    "start": "nodemon app/index.js"
+    "start": "nodemon app/index.js",
+    "start-production": "node index.js config=./config.production.json",
+    "start-demo": "node index.js config=./config.demo.json"
   },
   "author": "",
   "license": "ISC",

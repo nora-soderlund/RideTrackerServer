@@ -4,3 +4,4 @@
 /app/uploads
 /logs
 /documents
+/config.*.json
