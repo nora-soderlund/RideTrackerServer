@@ -10,6 +10,9 @@ Server.on("POST", "/api/v1/user/register", async (request, response, parameters)
     if(rows.length != 0)
         return { success: false, content: "E-mail address already belongs to an user!" };
 
+    if(!parameters.password)
+        return { success: false };
+
     const id = uuidv4();
     const token = uuidv4();
     const hash = await bcrypt.hash(parameters.password, 10);
