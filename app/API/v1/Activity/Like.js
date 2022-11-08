@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-Server.on("POST", "/api/activity/like", async (request, response, parameters) => {
+Server.on("POST", "/api/v1/activity/like", async (request, response, parameters) => {
     if(request.user.guest)
         return { success: false };
 
@@ -31,7 +31,7 @@ Server.on("POST", "/api/activity/like", async (request, response, parameters) =>
     };
 }, [ "activity", "like" ]);
 
-Server.on("GET", "/api/activity/like", async (request, response, parameters) => {
+Server.on("GET", "/api/v1/activity/like", async (request, response, parameters) => {
     if(request.user.guest)
         return { success: false };
 

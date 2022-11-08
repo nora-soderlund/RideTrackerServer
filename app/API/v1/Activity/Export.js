@@ -4,7 +4,7 @@ import { XmlBuilder, XmlElement } from "@nora-soderlund/xmlbuilder";
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-Server.on("GET", "/api/activity/export", async (request, response, parameters) => {
+Server.on("GET", "/api/v1/activity/export", async (request, response, parameters) => {
     const rows = await Database.queryAsync(`SELECT * FROM activities WHERE id = ${Database.connection.escape(parameters.id)} LIMIT 1`);
 
     if(rows.length == 0)

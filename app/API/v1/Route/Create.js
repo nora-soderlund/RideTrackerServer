@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-Server.on("POST", "/api/route/create", async (request, response, body) => {
+Server.on("POST", "/api/v1/route/create", async (request, response, body) => {
     if(request.user.guest)
         return { success: false };
 

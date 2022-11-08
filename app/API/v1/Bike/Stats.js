@@ -4,7 +4,7 @@ import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
 
-Server.on("GET", "/api/bike/stats", async (request, response, parameters) => {
+Server.on("GET", "/api/v1/bike/stats", async (request, response, parameters) => {
     const bikes = await Database.queryAsync(`SELECT * FROM bikes WHERE id = ${Database.connection.escape(parameters.id)} LIMIT 1`);
 
     if(bikes.length == 0)

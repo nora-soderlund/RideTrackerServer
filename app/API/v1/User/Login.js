@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-Server.on("POST", "/api/user/login", async (request, response, parameters) => {
+Server.on("POST", "/api/v1/user/login", async (request, response, parameters) => {
     const rows = await Database.queryAsync(`SELECT * FROM users WHERE email = ${Database.connection.escape(parameters.email)} LIMIT 1`);
     
     if(rows.length == 0)

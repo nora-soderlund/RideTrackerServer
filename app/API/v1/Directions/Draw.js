@@ -8,7 +8,7 @@ import Database from "./../../../Database.js";
 
 import { Directions, Roads, Geocoding } from "./../../../Google/Google.js";
 
-Server.on("POST", "/api/directions/draw", async (request, response, body) => {
+Server.on("POST", "/api/v1/directions/draw", async (request, response, body) => {
     let places = [];
 
     for(let index = 0; index < body.coordinates.length; index++) {

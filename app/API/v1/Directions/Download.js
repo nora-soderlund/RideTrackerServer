@@ -6,7 +6,7 @@ const { decode } = polylineCodec;
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-Server.on("GET", "/api/directions/download", async (request, response, parameters) => {
+Server.on("GET", "/api/v1/directions/download", async (request, response, parameters) => {
     const rows = await Database.queryAsync(`SELECT * FROM directions WHERE id = ${Database.connection.escape(parameters.directions)} LIMIT 1`);
     
     if(rows.length == 0)

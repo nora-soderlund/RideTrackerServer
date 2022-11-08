@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-Server.on("POST", "/api/activity/comment", async (request, response, parameters) => {
+Server.on("POST", "/api/v1/activity/comment", async (request, response, parameters) => {
     const id = uuidv4();
     const timestamp = new Date(Date.now()).getTime();
 
@@ -15,7 +15,7 @@ Server.on("POST", "/api/activity/comment", async (request, response, parameters)
     };
 }, [ "activity", "text" ]);
 
-Server.on("GET", "/api/activity/comment", async (request, response, parameters) => {
+Server.on("GET", "/api/v1/activity/comment", async (request, response, parameters) => {
     const rows = await Database.queryAsync(`SELECT * FROM activity_comments WHERE id = ${Database.connection.escape(parameters.comment)}`);
 
     return {

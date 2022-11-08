@@ -1,7 +1,7 @@
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-Server.on("GET", "/api/user/activities", async (request, response, parameters) => {
+Server.on("GET", "/api/v1/user/activities", async (request, response, parameters) => {
     const rows = await Database.queryAsync(`SELECT id FROM activities WHERE user = ${Database.connection.escape(parameters.user)} ORDER BY timestamp DESC`);
 
     return {

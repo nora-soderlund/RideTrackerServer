@@ -3,7 +3,7 @@ import global from "./../../../global.js";
 import Server from "./../../Server.js";
 import Database from "./../../Database.js";
 
-Server.on("GET", "/api/bike", async (request, response, parameters) => {
+Server.on("GET", "/api/v1/bike", async (request, response, parameters) => {
     const rows = await Database.queryAsync(`SELECT * FROM bikes WHERE id = ${Database.connection.escape(parameters.bike)} LIMIT 1`);
     
     if(rows.length == 0)

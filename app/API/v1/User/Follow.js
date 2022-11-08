@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-Server.on("POST", "/api/user/follow", async (request, response, body) => {
+Server.on("POST", "/api/v1/user/follow", async (request, response, body) => {
     if(request.user.guest)
         return { success: false };
 
@@ -32,7 +32,7 @@ Server.on("POST", "/api/user/follow", async (request, response, body) => {
     return { success: true, content: false };
 });
 
-Server.on("GET", "/api/user/follow", async (request, response, body) => {
+Server.on("GET", "/api/v1/user/follow", async (request, response, body) => {
     if(request.user.guest)
         return { success: false };
 

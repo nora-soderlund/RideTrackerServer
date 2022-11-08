@@ -5,7 +5,7 @@ import Database from "./../../../Database.js";
 
 import Recording from "./../../../Data/Recording.js"
 
-Server.on("GET", "/api/activity/stats", async (request, response, parameters) => {
+Server.on("GET", "/api/v1/activity/stats", async (request, response, parameters) => {
     let rows = await Database.queryAsync(`SELECT * FROM activities WHERE id = ${Database.connection.escape(parameters.id)} LIMIT 1`);
 
     if(rows.length == 0)

@@ -1,7 +1,7 @@
 import Server from "./../../Server.js";
 import Database from "./../../Database.js";
 
-Server.on("GET", "/api/activity", async (request, response, parameters) => {
+Server.on("GET", "/api/v1/activity", async (request, response, parameters) => {
     const rows = await Database.queryAsync(`SELECT * FROM activities WHERE id = ${Database.connection.escape(parameters.id)} LIMIT 1`);
 
     if(rows.length == 0)
@@ -20,7 +20,7 @@ Server.on("GET", "/api/activity", async (request, response, parameters) => {
     };
 }, [ "id" ]);
 
-Server.on("DELETE", "/api/activity", async (request, response, parameters) => {
+Server.on("DELETE", "/api/v1/activity", async (request, response, parameters) => {
     if(request.user.guest)
         return { success: false };
 
