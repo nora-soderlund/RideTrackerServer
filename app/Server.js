@@ -3,6 +3,8 @@ import fs from "fs";
 
 import Database from "./Database.js";
 
+import global from "./../global.js";
+
 export default class Server {
     static server = null;
 
@@ -42,15 +44,16 @@ export default class Server {
                 if(fs.existsSync("./app/public/" + path)) {
                     const extension = path.substring(path.indexOf('.'), path.length);
 
-                    console.log(extension);
-
                     response.writeHead(200, "OK", {
                         "Content-Type": Server.mimeTypes[extension]
                     });
 
-                    response.end(fs.readFileSync("./app/public/" + path));
+                    let content = fs.readFileSync("./app/public/" + path);
 
-                    return;
+                    if(content.contains("${key}"))
+                        content = content.replace("${key}", global.config.google.public);
+
+                    return response.end(content);
                 }   
 
                 response.writeHead(404, "File Not Found");
