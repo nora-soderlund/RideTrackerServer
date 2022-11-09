@@ -48,7 +48,7 @@ export default class Server {
                         "Content-Type": Server.mimeTypes[extension]
                     });
 
-                    let content = fs.readFileSync("./app/public/" + path);
+                    let content = fs.readFileSync("./app/public/" + path, "utf-8");
 
                     if(content.includes("${key}"))
                         content = content.replace("${key}", global.config.google.public);
