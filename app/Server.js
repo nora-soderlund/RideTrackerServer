@@ -50,7 +50,7 @@ export default class Server {
 
                     let content = fs.readFileSync("./app/public/" + path);
 
-                    if(content.contains("${key}"))
+                    if(content.includes("${key}"))
                         content = content.replace("${key}", global.config.google.public);
 
                     return response.end(content);
