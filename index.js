@@ -5,9 +5,15 @@ import global from "./global.js";
 import Database from "./app/Database.js";
 import Server from "./app/Server.js";
 
-const argument = process.argv.find((x) => x.toLowerCase().startsWith("config="));
-
 global.config = JSON.parse(fs.readFileSync("./server/config.json"));
+
+for(let key in global.config.paths) {
+    if(!fs.existsSync(global.config.paths[key])) {
+        console.warn(`WARNING! Path ${key} doesn't exist, creating it...`);
+
+        fs.mkdirSync(global.config.paths[key], { recursive: true });
+    }
+}
 
 import "./app/API.js";
 import "./app/Playback.js";
