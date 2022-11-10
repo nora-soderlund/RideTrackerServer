@@ -4,13 +4,15 @@ import { XmlBuilder, XmlElement } from "@nora-soderlund/xmlbuilder";
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
+import global from "./../../../../global.js";
+
 Server.on("GET", "/api/v1/activity/export", async (request, response, parameters) => {
     const rows = await Database.queryAsync(`SELECT * FROM activities WHERE id = ${Database.connection.escape(parameters.id)} LIMIT 1`);
 
     if(rows.length == 0)
         return "No activity found!";
 
-    const json = JSON.parse(fs.readFileSync("./app/uploads/activities/" + parameters.id + ".json"));
+    const json = JSON.parse(fs.readFileSync(global.config.paths.activities + `${parameters.id}.json`));
 
     const builder = new XmlBuilder();
 

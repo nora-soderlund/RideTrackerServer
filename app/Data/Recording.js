@@ -1,8 +1,8 @@
 import fs from "fs";
 
-import global from "./../../global.js";
-
 import Coordinates from "./Coordinates.js";
+
+import global from "./../../global.js";
 
 export default class Recording {
     static version = "1.0.9";
@@ -10,17 +10,17 @@ export default class Recording {
     constructor(id) {
         this.id = id;
 
-        this.data = JSON.parse(fs.readFileSync("./app/uploads/activities/" + id + ".json"));
+        this.data = JSON.parse(fs.readFileSync(global.config.paths.activities + `${id}.json`));
     };
 
     async getManifest() {
-        if(!fs.existsSync("./app/uploads/activities/manifests/" + this.id + ".json"))
+        if(!fs.existsSync(global.config.paths.manifests + `${this.id}.json`))
             await this.update(this.id);
 
-        this.manifest = JSON.parse(fs.readFileSync("./app/uploads/activities/manifests/" + this.id + ".json"));
+        this.manifest = JSON.parse(fs.readFileSync(global.config.paths.manifests + `${this.id}.json`));
         
         if(this.manifest.meta.version != Recording.version) {
-            fs.rmSync("./app/uploads/activities/manifests/" + this.id + ".json");
+            fs.rmSync(global.config.paths.manifests + `${this.id}.json`);
             
             await this.update(this.id);
         }
@@ -37,7 +37,7 @@ export default class Recording {
             sections: await this.updateSections()
         };
 
-        fs.writeFileSync("./app/uploads/activities/manifests/" + id + ".json", JSON.stringify(manifest));
+        fs.writeFileSync(global.config.paths.manifests + `${id}.json`, JSON.stringify(manifest));
     };
 
     async updateSections() {

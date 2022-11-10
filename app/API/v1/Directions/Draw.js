@@ -2,11 +2,12 @@ import global from "./../../../../global.js";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 
+import { Directions, Roads, Geocoding } from "./../../../Google/Google.js";
 
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-import { Directions, Roads, Geocoding } from "./../../../Google/Google.js";
+import global from "./../../../../global.js";
 
 Server.on("POST", "/api/v1/directions/draw", async (request, response, body) => {
     let places = [];
@@ -45,7 +46,7 @@ Server.on("POST", "/api/v1/directions/draw", async (request, response, body) => 
 
     await Database.queryAsync(`INSERT INTO directions (id, user, summary, distance, duration, timestamp) VALUES (${Database.connection.escape(id)}, ${Database.connection.escape(request.user.id)}, ${Database.connection.escape(summary)}, ${Database.connection.escape(distance)}, ${Database.connection.escape(duration)}, ${Database.connection.escape(Date.now())})`);
 
-    fs.writeFileSync(`./documents/directions/${id}.json`, JSON.stringify(directions));
+    fs.writeFileSync(global.config.paths.directions + `${id}.json`, JSON.stringify(directions));
 
     return {
         success: true,

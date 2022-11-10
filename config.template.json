@@ -18,5 +18,17 @@
     "google": {
         "key": "",
         "public": ""
+    },
+
+    "paths": {
+        "logs": "./server/logs/",
+        
+        "directions": "./server/directions/",
+
+        "activities": "./server/activities/",
+        "manifests": "./server/activities/manifests/",
+
+        "public": "./server/public/",
+        "uploads": "./server/public/uploads/"
     }
 }

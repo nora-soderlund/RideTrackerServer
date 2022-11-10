@@ -6,6 +6,8 @@ const { decode } = polylineCodec;
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
+import global from "./../../../../global.js";
+
 Server.on("GET", "/api/v1/directions/download", async (request, response, parameters) => {
     const rows = await Database.queryAsync(`SELECT * FROM directions WHERE id = ${Database.connection.escape(parameters.directions)} LIMIT 1`);
     
@@ -14,7 +16,7 @@ Server.on("GET", "/api/v1/directions/download", async (request, response, parame
 
     const row = rows[0];
 
-    const directions = JSON.parse(fs.readFileSync(`./documents/directions/${row.id}.json`));
+    const directions = JSON.parse(fs.readFileSync(global.config.paths.directions + `${row.id}.json`));
 
     return {
         success: true,

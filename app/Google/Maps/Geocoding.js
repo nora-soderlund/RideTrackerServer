@@ -17,7 +17,7 @@ export default class Geocoding {
         let response = await fetch(url);
         let result = await response.json();
     
-        fs.writeFileSync(`./logs/Google_Maps_Geocoding_reverse_${Date.now()}.json`, JSON.stringify({
+        fs.writeFileSync(global.config.paths.logs + `Google_Maps_Geocoding_reverse_${Date.now()}.json`, JSON.stringify({
             url,
             response: result
         }));

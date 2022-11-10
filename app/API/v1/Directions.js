@@ -16,10 +16,10 @@ Server.on("GET", "/api/v1/directions", async (request, response, parameters) => 
 
     const row = rows[0];
 
-    if(!fs.existsSync(`./documents/directions/${row.id}.json`))
+    if(!fs.existsSync(global.config.paths.directions + `${row.id}.json`))
         return { success: false };
 
-    const directions = JSON.parse(fs.readFileSync(`./documents/directions/${row.id}.json`));
+    const directions = JSON.parse(fs.readFileSync(global.config.paths.directions + `${row.id}.json`));
 
     const sections = directions.routes.map((route) => {
         return decode(route.overview_polyline.points, 5).map((points) => { return { latitude: points[0], longitude: points[1] } });

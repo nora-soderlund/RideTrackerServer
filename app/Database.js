@@ -1,5 +1,7 @@
 import mysql from "mysql";
 
+import global from "../global";
+
 export default class Database {
     static connection = null;
 
@@ -66,9 +68,9 @@ export default class Database {
     static error(category, object) {
         const name = `mysql_${category}_${Date.now()}.json`;
 
-        if(!fs.existsSync("./logs/"))
-            fs.mkdirSync("./logs/");
+        if(!fs.existsSync(global.config.paths.logs))
+            fs.mkdirSync(global.config.paths.logs);
                 
-        fs.writeFileSync(`./logs/${name}`, JSON.stringify(object));
+        fs.writeFileSync(global.config.paths.logs + name, JSON.stringify(object));
     };
 };

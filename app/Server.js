@@ -9,15 +9,7 @@ export default class Server {
     static server = null;
 
     static listen(settings) {
-        const options = {};
-
-        if(fs.existsSync("./key.pem"))
-            options.key = fs.readFileSync("./key.pem");
-
-        if(fs.existsSync("./cert.pem"))
-            options.cert = fs.readFileSync("./cert.pem");
-
-        this.server = http.createServer(options, (...args) => this.onRequest(...args)).listen(settings.port);
+        this.server = http.createServer((...args) => this.onRequest(...args)).listen(settings.port);
 
         console.log("Listening to port " + settings.port);
     };
@@ -41,14 +33,14 @@ export default class Server {
             const path = (queryIndex == -1)?(request.url):(request.url.substring(0, queryIndex));
 
             if(path.includes('.')) {
-                if(fs.existsSync("./app/public/" + path)) {
+                if(fs.existsSync(global.config.paths.public + path)) {
                     const extension = path.substring(path.indexOf('.'), path.length);
 
                     response.writeHead(200, "OK", {
                         "Content-Type": Server.mimeTypes[extension]
                     });
 
-                    let content = fs.readFileSync("./app/public/" + path, "utf-8");
+                    let content = fs.readFileSync(global.config.paths.public + path, "utf-8");
 
                     if(content.includes("${key}"))
                         content = content.replace("${key}", global.config.google.public);

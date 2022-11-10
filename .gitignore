@@ -1,9 +1,7 @@
 /node_modules
-/config.json
 *.pem
-/app/uploads
-/app/public/uploads
-/app/public/avatars
-/logs
-/documents
-/config.*.json
+/server/config.json
+/server/activities
+/server/directions
+/server/logs
+/server/public/uploads
