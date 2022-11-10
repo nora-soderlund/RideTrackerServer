@@ -1,6 +1,6 @@
 import mysql from "mysql";
 
-import global from "../global";
+import global from "../global.js";
 
 export default class Database {
     static connection = null;
