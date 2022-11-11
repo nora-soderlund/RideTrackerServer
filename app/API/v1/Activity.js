@@ -14,6 +14,8 @@ Server.on("GET", "/api/v1/activity", async (request, response, parameters) => {
         content: {
             id: row.id,
             user: row.user,
+            title: row.title,
+            description: row.description,
             bike: row.bike,
             timestamp: row.timestamp
         }
