@@ -6,7 +6,6 @@ import "./API/v1/Upload.js";
 
 import "./API/v1/User.js";
 import "./API/v1/User/Activity.js";
-import "./API/v1/User/Bikes.js";
 import "./API/v1/User/Routes.js";
 import "./API/v1/User/Avatar.js";
 import "./API/v1/User/Login.js";
@@ -16,6 +15,9 @@ import "./API/v1/User/Authenticate.js";
 import "./API/v1/User/Activities.js";
 import "./API/v1/User/Comments.js";
 import "./API/v1/User/Follow.js";
+
+import "./API/v1/User/Bikes.js";
+import "./API/v1/User/Bikes/Names";
 
 import "./API/v1/Activity.js";
 import "./API/v1/Activity/Map.js";
