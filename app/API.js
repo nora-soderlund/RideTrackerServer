@@ -17,7 +17,7 @@ import "./API/v1/User/Comments.js";
 import "./API/v1/User/Follow.js";
 
 import "./API/v1/User/Bikes.js";
-import "./API/v1/User/Bikes/Names";
+import "./API/v1/User/Bikes/Names.js";
 
 import "./API/v1/Activity.js";
 import "./API/v1/Activity/Map.js";
