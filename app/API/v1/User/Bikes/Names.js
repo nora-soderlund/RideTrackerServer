@@ -1,5 +1,5 @@
-import Server from "./../../../Server.js";
-import Database from "./../../../Database.js";
+import Server from "./../../../../Server.js";
+import Database from "./../../../../Database.js";
 
 Server.on("GET", "/api/v1/user/bikes/names", async (request, response, parameters) => {
     const rows = await Database.queryAsync(`SELECT id, name, brand, model, year FROM bikes WHERE user = ${Database.connection.escape(parameters.user)}`);
