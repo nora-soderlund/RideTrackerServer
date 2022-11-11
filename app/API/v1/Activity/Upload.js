@@ -12,9 +12,11 @@ Server.on("POST", "/api/v1/activity/upload", async (request, response, body) => 
 
     const id = uuidv4();
 
-    await Database.queryAsync(`INSERT INTO activities (id, user, timestamp) VALUES (${Database.connection.escape(id)}, ${Database.connection.escape(request.user.id)}, ${Database.connection.escape(Date.now())})`);
+    await Database.queryAsync(`INSERT INTO activities (id, user, title, description, timestamp) VALUES (${Database.connection.escape(id)}, ${Database.connection.escape(request.user.id)}, ${Database.connection.escape(body.title)}, ${Database.connection.escape(body.description)}, ${Database.connection.escape(Date.now())})`);
     
     fs.writeFileSync(global.config.paths.activities + `${id}.json`, JSON.stringify(body.recording));
     
-    return { success: true, content: id };
+    return { success: true, content: {
+        activity: id
+    } };
 });
