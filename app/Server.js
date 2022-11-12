@@ -40,7 +40,7 @@ export default class Server {
                         "Content-Type": Server.mimeTypes[extension]
                     });
 
-                    let content = fs.readFileSync(global.config.paths.public + path, "utf-8");
+                    let content = fs.readFileSync(global.config.paths.public + path, (extension == ".html")?("utf-8"):(null));
 
                     if(content.includes("${key}"))
                         content = content.replace("${key}", global.config.google.public);
