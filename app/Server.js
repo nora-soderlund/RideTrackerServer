@@ -27,6 +27,7 @@ export default class Server {
 
     static async onRequest(request, response) {
         try {
+
             const url = request.url.toLowerCase();
         
             const queryIndex = url.indexOf('?');
@@ -81,6 +82,7 @@ export default class Server {
             }
 
             console.log(request.socket.remoteAddress + " > " + request.method + " " + request.url);
+            console.log(request.socket.remoteAddress + " > " + request.headers["user-agent"]);
 
             const listener = this.requests.find(x => x.method == request.method && x.path == path);
 
