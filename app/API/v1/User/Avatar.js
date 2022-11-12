@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
+import global from "./../../../../global.js";
+
 Server.on("PUT", "/api/v1/user/avatar", async (request, response, body) => {
     if(request.user.guest)
         return { success: false };
