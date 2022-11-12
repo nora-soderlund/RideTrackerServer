@@ -39,7 +39,9 @@ Server.on("GET", "/api/v1/activity/stats", async (request, response, parameters)
         content: {
             distance: row.distance,
             speed: row.speed,
-            elevation: row.elevation
+            elevation: row.elevation,
+            origin: row.origin,
+            destination: row.destination
         }
     };
 }, [ "id" ]);
