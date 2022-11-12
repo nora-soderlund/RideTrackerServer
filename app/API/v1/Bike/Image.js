@@ -6,7 +6,7 @@ import Database from "../../../Database.js";
 
 import global from "../../../../global.js";
 
-Server.on("PUT", "/api/v1/bike/image", async (request, response, body) => {
+Server.on("POST", "/api/v1/bike/image", async (request, response, body) => {
     if(request.user.guest)
         return { success: false };
 
