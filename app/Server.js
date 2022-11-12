@@ -81,8 +81,7 @@ export default class Server {
                 }
             }
 
-            console.log(request.socket.remoteAddress + " > " + request.method + " " + request.url);
-            console.log(request.socket.remoteAddress + " > " + request.headers["user-agent"]);
+            console.log(request.headers["user-agent"] + " " + request.socket.remoteAddress + " > " + request.method + " " + request.url);
 
             const listener = this.requests.find(x => x.method == request.method && x.path == path);
 
