@@ -1,4 +1,5 @@
 import mysql from "mysql";
+import fs from "fs";
 
 import global from "../global.js";
 
@@ -6,28 +7,61 @@ export default class Database {
     static connection = null;
 
     static connectAsync(settings) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this.settings = settings;
 
-            this.connection = mysql.createConnection(this.settings);
+            this.connection = mysql.createPool(this.settings);
 
-            this.connection.connect((error) => {
-                if(error)
-                    return reject(error);
+            this.connection.getConnection((error) => {
+                if(error) {
+                    console.error(`ERROR! MySQL connection failed: ${error}`);
+                    this.error("connection", { error });
+                    
+                    return;
+                }
 
                 return resolve();
+            });
+
+            this.connection.on("error", function(error) {
+                console.error(`ERROR! Fatal MySQL failure: ${error}`);
+                this.error("fatal", { error });
+
+                this.diagnose();
             });
         });
     };
 
     static queryAsync(query) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             try {
-                this.connection.query(query, (error, rows) => {
-                    if(error)
-                        return reject(error);
-    
-                    return resolve(rows);
+                this.connection.getConnection((error, connection) => {
+                    if(error) {
+                        console.error(`ERROR! MySQL connection failed: ${error}`);
+                        this.error("query", { query, error });
+        
+                        this.diagnose();
+
+                        return;
+                    }
+
+                    connection.on("error", function(error) {
+                        console.error(`ERROR! Fatal MySQL failure: ${error}`);
+                        this.error("fatal", { query, error });
+        
+                        this.diagnose();
+                    });
+
+                    connection.query(query, (error, rows) => {
+                        if(error) {
+                            console.error(`ERROR! MySQL query error: ${error}`);
+                            this.error("fatal", { query, error });
+                            
+                            return;
+                        }
+        
+                        return resolve(rows);
+                    });
                 });
             }
             catch(error) {
