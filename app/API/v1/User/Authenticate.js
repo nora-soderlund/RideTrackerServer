@@ -11,6 +11,9 @@ Server.on("POST", "/api/v1/user/authenticate", async (request, response, paramet
 
     Database.queryAsync(`DELETE FROM user_tokens WHERE id = ${Database.connection.escape(parameters.token)}`);
 
+    if(rows[0].deleted)
+        return {success: false };
+
     const newToken = uuidv4();
     await Database.queryAsync(`INSERT INTO user_tokens (id, user) VALUES (${Database.connection.escape(newToken)}, ${Database.connection.escape(rows[0].user)})`);
 
