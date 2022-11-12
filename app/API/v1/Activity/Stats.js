@@ -23,7 +23,12 @@ Server.on("GET", "/api/v1/activity/stats", async (request, response, parameters)
         const speed = recording.getSpeed();
         const elevation = recording.getElevation();
 
-        await Database.queryAsync(`UPDATE activities SET distance = ${Database.connection.escape(distance)}, speed = ${Database.connection.escape(speed)}, elevation = ${Database.connection.escape(elevation)} WHERE id = ${Database.connection.escape(parameters.id)}`);
+        const origin = await recording.getOrigin();
+        const destination = await recording.getDestination();
+
+        console.log({ origin, destination });
+
+        await Database.queryAsync(`UPDATE activities SET distance = ${Database.connection.escape(distance)}, speed = ${Database.connection.escape(speed)}, elevation = ${Database.connection.escape(elevation)}, origin = ${Database.connection.escape(origin)}, destination = ${Database.connection.escape(destination)} WHERE id = ${Database.connection.escape(parameters.id)}`);
     }
 
     rows = await Database.queryAsync(`SELECT * FROM activities WHERE id = ${Database.connection.escape(parameters.id)} LIMIT 1`);

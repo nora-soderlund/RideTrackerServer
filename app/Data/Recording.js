@@ -4,8 +4,10 @@ import Coordinates from "./Coordinates.js";
 
 import global from "./../../global.js";
 
+import { Geocoding } from "../Google/Google.js";
+
 export default class Recording {
-    static version = "1.0.10";
+    static version = "1.0.11";
 
     constructor(id) {
         this.id = id;
@@ -101,7 +103,9 @@ export default class Recording {
                 let passedOverlap = false;
 
                 if(!points) {
-                    //console.log("snap to roads issue with accuracy!");
+                    console.log("snap to roads issue with accuracy!");
+
+                    console.log(result);
         
                     offset = upperBound;
 
@@ -138,7 +142,9 @@ export default class Recording {
             
             return snappedPoints;
         }
-        catch {
+        catch(error) {
+            console.log(error);
+
             return coordinates;
         }
     };
@@ -192,5 +198,53 @@ export default class Recording {
         });
 
         return Math.round(elevation);
+    };
+
+    async getOrigin() {
+        if(!this.manifest.sections.length)
+            return null;
+
+        const section = this.manifest.sections[0];
+
+        if(!section.coordinates.length)
+            return null;
+
+        const coordinate = section.coordinates[0];
+
+        const geocoding = await Geocoding.reverse(coordinate.coords, {
+            result_type: "locality"
+        });
+
+        if(!geocoding.results.length)
+            return null;
+
+        if(!geocoding.results[0].address_components.length)
+            return null;
+
+        return geocoding.results[0].address_components[0].long_name;
+    };
+
+    async getDestination() {
+        if(!this.manifest.sections.length)
+            return null;
+
+        const section = this.manifest.sections[this.manifest.sections.length - 1];
+
+        if(!section.coordinates.length)
+            return null;
+            
+        const coordinate = section.coordinates[section.coordinates.length - 1];
+
+        const geocoding = await Geocoding.reverse(coordinate.coords, {
+            result_type: "locality"
+        });
+
+        if(!geocoding.results.length)
+            return null;
+
+        if(!geocoding.results[0].address_components.length)
+            return null;
+
+        return geocoding.results[0].address_components[0].long_name;
     };
 };
