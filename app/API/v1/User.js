@@ -16,7 +16,7 @@ Server.on("GET", "/api/v1/user", async (request, response, parameters) => {
             id: rows[0].id,
             slug: rows[0].slug,
             name: rows[0].firstname + " " + rows[0].lastname,
-            avatar: global.config.server.domain + ((rows[0].avatar)?("/uploads/" + rows[0].avatar):("/avatars/default.jpg"))
+            avatar: global.config.server.domain + ((rows[0].avatar)?(rows[0].avatar):("/avatars/default.jpg"))
         }
     };
 });
