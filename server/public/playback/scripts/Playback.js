@@ -166,15 +166,13 @@ class Playback {
             const onMapRender = () => {
                 const section = this.data.sections[sectionIndex];
                 
-                const elapsed = ((performance.now() - start)) * 100;
+                const elapsed = ((performance.now() - start)) * 50;
 
                 const current = startCoordinate + elapsed;
 
                 let index = section.coordinates.findIndex((coordinate) => coordinate.timestamp >= current);
 
-                console.log({ length: section.coordinates.length, index });
-
-                if(index == -1 || index >= section.coordinates.length - 1) {
+                if(index == -1 || index + 1 >= section.coordinates.length - 1) {
                     sectionIndex++;
 
                     if(sectionIndex != this.data.sections.length) {
@@ -228,8 +226,9 @@ class Playback {
 
                 let bearingDifference = 0, bearingIndex = index + 1;
 
-                while(bearingDifference < 20 / 3.6) {
-                    bearingDifference += section.coordinates[bearingIndex].coords.speed;
+                while(bearingDifference < 50) {
+                    const previousBearing = section.coordinates[bearingIndex - 1].coords;
+                    bearingDifference += this.getDistance(previousBearing, section.coordinates[bearingIndex].coords);
 
                     if(bearingIndex >= section.coordinates.length - 1)
                         break;
@@ -280,4 +279,18 @@ class Playback {
 
         return (bearing + 360) % 360;
     };
+
+    getDistance(start, end) {
+        var R = 6371; // Radius of the earth in km
+        var dLat = this.toRadians(end.latitude-start.latitude);
+        var dLon = this.toRadians(end.longitude-start.longitude); 
+        var a = 
+          Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.cos(this.toRadians(start.latitude)) * Math.cos(this.toRadians(end.latitude)) * 
+          Math.sin(dLon/2) * Math.sin(dLon/2)
+          ; 
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        var d = R * c; // Distance in km
+        return d * 1000;
+      }
 };
