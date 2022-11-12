@@ -35,33 +35,15 @@ export default class Database {
     static queryAsync(query) {
         return new Promise((resolve) => {
             try {
-                this.connection.getConnection((error, connection) => {
+                this.connection.query(query, (error, rows) => {
                     if(error) {
-                        console.error(`ERROR! MySQL connection failed: ${error}`);
-                        this.error("query", { query, error });
-        
-                        this.diagnose();
-
+                        console.error(`ERROR! MySQL query error: ${error}`);
+                        this.error("fatal", { query, error });
+                        
                         return;
                     }
-
-                    connection.on("error", function(error) {
-                        console.error(`ERROR! Fatal MySQL failure: ${error}`);
-                        this.error("fatal", { query, error });
-        
-                        this.diagnose();
-                    });
-
-                    connection.query(query, (error, rows) => {
-                        if(error) {
-                            console.error(`ERROR! MySQL query error: ${error}`);
-                            this.error("fatal", { query, error });
-                            
-                            return;
-                        }
-        
-                        return resolve(rows);
-                    });
+    
+                    return resolve(rows);
                 });
             }
             catch(error) {
