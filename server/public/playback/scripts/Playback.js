@@ -150,7 +150,8 @@ class Playback {
         return new Promise((resolve) => {
             let ready = true;
             let sectionIndex = 0;
-            const start = performance.now();
+            let startCoordinate = this.data.sections[0].coordinates[Playback.startIndex].timestamp;
+            let start = performance.now();
             let delays = 0, timestamp = null;
             let previousCoordinateIndex = null;
             let heading = 0;
@@ -165,23 +166,34 @@ class Playback {
             const onMapRender = () => {
                 const section = this.data.sections[sectionIndex];
                 
-                const elapsed = ((performance.now() - start) - delays) * 60;
+                const elapsed = ((performance.now() - start)) * 100;
 
-                const current = section.coordinates[Playback.startIndex].timestamp + elapsed;
+                const current = startCoordinate + elapsed;
 
-                const index = section.coordinates.findIndex((coordinate) => coordinate.timestamp >= current);
+                let index = section.coordinates.findIndex((coordinate) => coordinate.timestamp >= current);
 
-                if(index == section.length - 1) {
+                console.log({ length: section.coordinates.length, index });
+
+                if(index == -1 || index >= section.coordinates.length - 1) {
                     sectionIndex++;
 
-                    if(this.data.sections.length == sectionIndex) {
-                        google.maps.event.clearListeners(this.map, "idle");
+                    if(sectionIndex != this.data.sections.length) {
+                        start = performance.now();
+                        startCoordinate = this.data.sections[sectionIndex].coordinates[Playback.startIndex].timestamp;
 
-                        resolve();
+                        delays = 0;
+
+                        window.requestAnimationFrame(() => onMapRender());
 
                         return;
                     }
+
+                    google.maps.event.clearListeners(this.map, "idle");
+
+                    resolve();
                 }
+
+                index = Math.max(Playback.startIndex, index);
 
                 const coordinate = section.coordinates[index];
 
@@ -219,7 +231,7 @@ class Playback {
                 while(bearingDifference < 20 / 3.6) {
                     bearingDifference += section.coordinates[bearingIndex].coords.speed;
 
-                    if(bearingIndex + 1 >= section.coordinates.length)
+                    if(bearingIndex >= section.coordinates.length - 1)
                         break;
 
                     bearingIndex++;
