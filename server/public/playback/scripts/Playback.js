@@ -248,7 +248,7 @@ class Playback {
                 if(window.ReactNativeWebView && previousCoordinateIndex != index) {
                     previousCoordinateIndex = index;
 
-                    window.ReactNativeWebView.postMessage(JSON.stringify({ event: "frame", timestamp: current, section: 0, coordinate: index }));
+                    window.ReactNativeWebView.postMessage(JSON.stringify({ event: "frame", timestamp: current, section: sectionIndex, coordinate: index }));
                 }
 
                 timestamp = performance.now();
