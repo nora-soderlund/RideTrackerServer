@@ -10,7 +10,7 @@ Server.on("PUT", "/api/v1/upload", async (request, response, body) => {
     if(request.user.guest)
         return { success: false };
 
-    const path = "uploads" + "/" + request.user.id + "/";
+    const path = "/uploads" + "/" + request.user.id + "/";
 
     if(!fs.existsSync(global.config.paths.public + path))
         fs.mkdirSync(global.config.paths.public + path);
