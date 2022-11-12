@@ -22,7 +22,7 @@ Server.on("POST", "/api/v1/bike/image", async (request, response, body) => {
 
     fs.writeFileSync(global.config.paths.bikes + "/" + id, body.image, "base64");
 
-    await Database.queryAsync(`UPDATE bikes SET image ${Database.connection.escape(id)} WHERE id = ${Database.connection.escape(body.bike)}`);
+    await Database.queryAsync(`UPDATE bikes SET image = ${Database.connection.escape(id)} WHERE id = ${Database.connection.escape(body.bike)}`);
     
     return { success: true, content: id };
 });
