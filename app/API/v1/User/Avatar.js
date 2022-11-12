@@ -10,5 +10,5 @@ Server.on("POST", "/api/v1/user/avatar", async (request, response, body) => {
 
     await Database.queryAsync(`UPDATE users SET avatar = ${Database.connection.escape(body.image)} WHERE id = ${Database.connection.escape(request.user.id)}`);
     
-    return { success: true, content: id };
+    return { success: true, content: body.image };
 });
