@@ -17,7 +17,7 @@ Server.on("GET", "/api/v1/bike", async (request, response, parameters) => {
         content: {
             user: row.user,
             name: row.name,
-            image: global.config.server.domain + "/" + (row.image ?? "defaults/bike.png"),
+            image: global.config.server.domain + "/bikes/" + (row.image ?? "default.png"),
             brand: row.brand,
             model: row.model,
             year: row.year,

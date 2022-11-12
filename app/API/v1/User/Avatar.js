@@ -12,7 +12,7 @@ Server.on("PUT", "/api/v1/user/avatar", async (request, response, body) => {
 
     const id = uuidv4() + ".png";
 
-    fs.writeFileSync(global.config.paths.public + "/avatars/" + id, body, "base64");
+    fs.writeFileSync(global.config.paths.avatars + "/" + id, body, "base64");
 
     await Database.queryAsync(`UPDATE users SET avatar = ${Database.connection.escape(id)} WHERE id = ${Database.connection.escape(request.user.id)}`);
     

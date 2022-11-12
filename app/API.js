@@ -31,6 +31,7 @@ import "./API/v1/Activity/Comments.js";
 
 import "./API/v1/Bike.js";
 import "./API/v1/Bike/Create.js";
+import "./API/v1/Bike/Image.js";
 import "./API/v1/Bike/Stats.js";
 
 import "./API/v1/Route.js";
