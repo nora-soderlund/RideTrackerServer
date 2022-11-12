@@ -15,6 +15,9 @@ Server.on("POST", "/api/v1/user/login", async (request, response, parameters) =>
     if(!match)
         return { success: false, content: "Your credentials does not match!" };
 
+    if(rows[0].deleted)
+        return { success: false, content: "Your account deletion is being processed!" };
+
     const token = uuidv4();
 
     await Database.queryAsync(`INSERT INTO user_tokens (id, user) VALUES (${Database.connection.escape(token)}, ${Database.connection.escape(rows[0].id)})`);

@@ -20,3 +20,12 @@ Server.on("GET", "/api/v1/user", async (request, response, parameters) => {
         }
     };
 });
+
+Server.on("DELETE", "/api/v1/user", async (request, response) => {
+    if(request.user.guest)
+        return { success: false };
+
+    await Database.queryAsync(`UPDATE users SET deleted = true WHERE id = ${Database.connection.escape(request.user.id)}`);
+
+    return { success: true };
+});
