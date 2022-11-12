@@ -8,7 +8,11 @@ Server.on("POST", "/api/v1/user/avatar", async (request, response, body) => {
     if(request.user.guest)
         return { success: false };
 
-    await Database.queryAsync(`UPDATE users SET avatar = ${Database.connection.escape(body.image)} WHERE id = ${Database.connection.escape(request.user.id)}`);
+    const id = uuidv4() + ".png";
+
+    fs.writeFileSync(global.config.paths.public + "/avatars/" + id, body, "base64");
+
+    await Database.queryAsync(`UPDATE users SET avatar = ${Database.connection.escape(id)} WHERE id = ${Database.connection.escape(request.user.id)}`);
     
-    return { success: true, content: body.image };
+    return { success: true, content: id };
 });
