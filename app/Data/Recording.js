@@ -5,7 +5,7 @@ import Coordinates from "./Coordinates.js";
 import global from "./../../global.js";
 
 export default class Recording {
-    static version = "1.0.9";
+    static version = "1.0.10";
 
     constructor(id) {
         this.id = id;
@@ -75,59 +75,72 @@ export default class Recording {
     };
 
     async snapToRoads(coordinates) {
-        let snappedPoints = [];
+        try {
+            let snappedPoints = [];
 
-        const size = 75;
-        const overlap = 100 - size;
+            const size = 75;
+            const overlap = 100 - size;
 
-        let offset = 0;
+            let offset = 0;
 
-        while(offset < coordinates.length) {
-            if(offset > 0)
-                offset -= overlap;
+            while(offset < coordinates.length) {
+                if(offset > 0)
+                    offset -= overlap;
 
-            const lowerBound = offset;
-            const upperBound = Math.min(offset + size, coordinates.length);
+                const lowerBound = offset;
+                const upperBound = Math.min(offset + size, coordinates.length);
 
-            const page = coordinates.slice(lowerBound, upperBound);
+                const page = coordinates.slice(lowerBound, upperBound);
 
-            const path = page.map((coordinate) => `${coordinate.coords.latitude},${coordinate.coords.longitude}`).join('|');
+                const path = page.map((coordinate) => `${coordinate.coords.latitude},${coordinate.coords.longitude}`).join('|');
 
-            let response = await fetch(`https://roads.googleapis.com/v1/snapToRoads?path=${path}&interpolate=false&key=${global.config.google.key}`);
-            let result = await response.json();
+                let response = await fetch(`https://roads.googleapis.com/v1/snapToRoads?path=${path}&interpolate=false&key=${global.config.google.key}`);
+                let result = await response.json();
 
-            const points = result.snappedPoints;
-            let passedOverlap = false;
+                const points = result.snappedPoints;
+                let passedOverlap = false;
 
-            points.forEach((point) => {
-                if(offset == 0 || point.originalIndex >= overlap - 1)
-                    passedOverlap = true;
-                
-                if(passedOverlap) {
-                    const originalCoordinate = page[point.originalIndex];
+                if(!points) {
+                    //console.log("snap to roads issue with accuracy!");
+        
+                    offset = upperBound;
 
-                    const distance = Coordinates.getDistance(originalCoordinate.coords, point.location);
-
-                    if(distance < originalCoordinate.coords.accuracy) {
-                        snappedPoints.push({
-                            ...originalCoordinate,
-
-                            road: {
-                                latitude: point.location.latitude,
-                                longitude: point.location.longitude
-                            }
-                        });
-                    }
-                    else {
-                        snappedPoints.push(originalCoordinate);
-                    }
+                    continue;
                 }
-            });
-    
-            offset = upperBound;
-        }
 
-        return snappedPoints;
+                points.forEach((point) => {
+                    if(offset == 0 || point.originalIndex >= overlap - 1)
+                        passedOverlap = true;
+                    
+                    if(passedOverlap) {
+                        const originalCoordinate = page[point.originalIndex];
+
+                        const distance = Coordinates.getDistance(originalCoordinate.coords, point.location);
+
+                        if(distance < originalCoordinate.coords.accuracy) {
+                            snappedPoints.push({
+                                ...originalCoordinate,
+
+                                road: {
+                                    latitude: point.location.latitude,
+                                    longitude: point.location.longitude
+                                }
+                            });
+                        }
+                        else {
+                            snappedPoints.push(originalCoordinate);
+                        }
+                    }
+                });
+        
+                offset = upperBound;
+            }
+            
+            return snappedPoints;
+        }
+        catch {
+            return coordinates;
+        }
     };
 
     getDistance() {
