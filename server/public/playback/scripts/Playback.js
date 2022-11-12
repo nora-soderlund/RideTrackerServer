@@ -166,7 +166,7 @@ class Playback {
             const onMapRender = () => {
                 const section = this.data.sections[sectionIndex];
                 
-                const elapsed = ((performance.now() - start)) * 50;
+                const elapsed = ((performance.now() - start) - delays) * 50;
 
                 const current = startCoordinate + elapsed;
 
