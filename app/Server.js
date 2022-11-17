@@ -85,8 +85,11 @@ export default class Server {
 
             const listener = this.requests.find(x => x.method == request.method && x.path == path);
 
-            if(!listener)
-                throw new Error("Listener does not exist!");
+            if(!listener) {
+                response.writeHead(405, "Method Not Allowed");
+
+                return response.end();
+            }
 
             let result = null;
 
@@ -101,14 +104,28 @@ export default class Server {
                     parameters[pair[0]] = pair[1];
                 }
 
+                const verifiedParameters = this.getVerifiedParameters(listener, parameters);
+
+                if(!verifiedParameters) {
+                    response.writeHead(406, "Not Acceptable");
+
+                    return response.end();
+                }
+
                 result = await listener.response(request, response, parameters);
             }
             else if(request.method == "POST") {
-                const body = JSON.parse(await this.downloadBodyAsync(request));
+                const parameters = JSON.parse(await this.downloadBodyAsync(request));
 
-                console.log(body);
-                
-                result = await listener.response(request, response, body);
+                const verifiedParameters = this.getVerifiedParameters(listener, parameters);
+
+                if(!verifiedParameters) {
+                    response.writeHead(406, "Not Acceptable");
+
+                    return response.end();
+                }
+
+                result = await listener.response(request, response, parameters);
             }
             else if(request.method == "PUT") {
                 const body = await this.downloadBodyAsync(request);
@@ -134,6 +151,44 @@ export default class Server {
         finally {
             response.end();
         }
+    };
+
+    static getVerifiedParameters(listener, parameters) {
+        let missingParameters = [], supportedParameters = [], unknownParameters = [];
+
+        if(listener.options?.parameters) {
+            listener.options.parameters.forEach((parameter) => {
+                if(!parameters.hasOwnProperty(parameter))
+                    missingParameters.push(parameter);
+
+                supportedParameters.push(parameter);
+            });
+        }
+
+        if(listener.options?.optionalParameters) {
+            listener.options.optionalParameters.forEach((parameter) => {
+                supportedParameters.push(parameter);
+            });
+        }
+
+        Object.keys(parameters).forEach((key) => {
+            if(!supportedParameters.includes(key))
+                unknownParameters.push(key);
+        });
+
+        if(missingParameters.length) {
+            console.error(`Missing parameters: ${missingParameters.join(", ")}`);
+
+            return false;
+        }
+        
+        if(unknownParameters.length) {
+            console.error(`Unknown parameters: ${unknownParameters.join(", ")}`);
+
+            return false;
+        }
+
+        return true;
     };
 
     static async downloadBodyAsync(request) {
