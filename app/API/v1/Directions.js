@@ -8,18 +8,20 @@ import global from "./../../../global.js";
 import Server from "./../../Server.js";
 import Database from "./../../Database.js"
 
-Server.on("GET", "/api/v1/directions", async (request, response, parameters) => {
-    const rows = await Database.queryAsync(`SELECT * FROM directions WHERE id = ${Database.connection.escape(parameters.directions)} LIMIT 1`);
+Server.on("GET", "/api/v1/directions", { parameters: [ "directions" ] }, async (request, response, parameters) => {
+    const row = await Database.querySingleAsync(`SELECT * FROM directions WHERE id = ${Database.connection.escape(parameters.directions)} LIMIT 1`);
     
-    if(rows.length == 0)
+    if(!row)
         return { success: false };
 
-    const row = rows[0];
+    const path = `${global.config.paths.directions}${row.id}.json`;
 
-    if(!fs.existsSync(global.config.paths.directions + `${row.id}.json`))
+    if(!fs.existsSync(path))
         return { success: false };
 
-    const directions = JSON.parse(fs.readFileSync(global.config.paths.directions + `${row.id}.json`));
+    const content = fs.readFileSync(path);
+
+    const directions = JSON.parse(content);
 
     const sections = directions.routes.map((route) => {
         return decode(route.overview_polyline.points, 5).map((points) => { return { latitude: points[0], longitude: points[1] } });
@@ -36,4 +38,4 @@ Server.on("GET", "/api/v1/directions", async (request, response, parameters) => 
             duration: row.duration
         }
     };
-}, [ "directions" ]);
+});

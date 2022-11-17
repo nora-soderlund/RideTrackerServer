@@ -1,13 +1,11 @@
 import Server from "./../../Server.js";
 import Database from "./../../Database.js";
 
-Server.on("GET", "/api/v1/activity", async (request, response, parameters) => {
-    const rows = await Database.queryAsync(`SELECT * FROM activities WHERE id = ${Database.connection.escape(parameters.id)} LIMIT 1`);
+Server.on("GET", "/api/v1/activity", { parameters: [ "id" ] }, async (request, response, parameters) => {
+    const row = await Database.querySingleAsync(`SELECT * FROM activities WHERE id = ${Database.connection.escape(parameters.id)} LIMIT 1`);
 
-    if(rows.length == 0)
-        return { success: false, content: "No activity found!" };
-
-    const row = rows[0];
+    if(!row)
+        return { success: false };
 
     return {
         success: true,
@@ -21,12 +19,9 @@ Server.on("GET", "/api/v1/activity", async (request, response, parameters) => {
             timestamp: row.timestamp
         }
     };
-}, [ "id" ]);
+});
 
-Server.on("DELETE", "/api/v1/activity", async (request, response, parameters) => {
-    if(request.user.guest)
-        return { success: false };
-
+Server.on("DELETE", "/api/v1/activity", { authenticated: true, parameters: [ "activity" ] }, async (request, response, parameters) => {
     const rows = await Database.queryAsync(`SELECT * FROM activities WHERE id = ${Database.connection.escape(parameters.activity)} LIMIT 1`);
 
     if(rows.length == 0)
@@ -42,4 +37,4 @@ Server.on("DELETE", "/api/v1/activity", async (request, response, parameters) =>
     return {
         success: true
     };
-}, [ "activity" ]);
+});

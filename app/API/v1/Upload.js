@@ -6,10 +6,7 @@ import Database from "./../../Database.js";
 
 import global from "./../../../global.js";
 
-Server.on("PUT", "/api/v1/upload", async (request, response, body) => {
-    if(request.user.guest)
-        return { success: false };
-
+Server.on("PUT", "/api/v1/upload", { authenticated: true }, async (request, response, body) => {
     const path = "/uploads" + "/" + request.user.id + "/";
 
     if(!fs.existsSync(global.config.paths.public + path))

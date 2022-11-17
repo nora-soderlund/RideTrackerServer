@@ -1,7 +1,7 @@
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-Server.on("GET", "/api/v1/user/bikes", async (request, response, parameters) => {
+Server.on("GET", "/api/v1/user/bikes", { parameters: [ "user" ] }, async (request, response, parameters) => {
     const rows = await Database.queryAsync(`SELECT id FROM bikes WHERE user = ${Database.connection.escape(parameters.user)}`);
 
     let bikes = [];
@@ -19,4 +19,4 @@ Server.on("GET", "/api/v1/user/bikes", async (request, response, parameters) => 
         success: true,
         content: bikes.sort((a, b) => b.rides - a.rides).map((bike) => bike.id)
     };
-}, [ "user" ]);
+});

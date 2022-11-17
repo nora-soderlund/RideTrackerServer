@@ -1,20 +1,11 @@
-
-
-import polylineCodec from "@googlemaps/polyline-codec";
-const { decode } = polylineCodec;
-
-import global from "./../../../global.js";
-
 import Server from "./../../Server.js";
 import Database from "./../../Database.js";
 
-Server.on("GET", "/api/v1/route", async (request, response, parameters) => {
-    const rows = await Database.queryAsync(`SELECT * FROM routes WHERE id = ${Database.connection.escape(parameters.route)} LIMIT 1`);
+Server.on("GET", "/api/v1/route", { parameters: [ "route" ] }, async (request, response, parameters) => {
+    const row = await Database.querySingleAsync(`SELECT * FROM routes WHERE id = ${Database.connection.escape(parameters.route)} LIMIT 1`);
     
-    if(rows.length == 0)
+    if(!row)
         return { success: false };
-
-    const row = rows[0];
 
     return {
         success: true,
@@ -27,4 +18,4 @@ Server.on("GET", "/api/v1/route", async (request, response, parameters) => {
             timestamp: row.timestamp
         }
     };
-}, [ "route" ]);
+});

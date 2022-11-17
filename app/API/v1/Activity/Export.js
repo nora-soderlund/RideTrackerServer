@@ -6,13 +6,23 @@ import Database from "./../../../Database.js";
 
 import global from "./../../../../global.js";
 
-Server.on("GET", "/api/v1/activity/export", async (request, response, parameters) => {
-    const rows = await Database.queryAsync(`SELECT * FROM activities WHERE id = ${Database.connection.escape(parameters.id)} LIMIT 1`);
+Server.on("GET", "/api/v1/activity/export", { authenticated: true, content: "application/xml", parameters: [ "id" ] }, async (request, response, parameters) => {
+    const row = await Database.querySingleAsync(`SELECT * FROM activities WHERE id = ${Database.connection.escape(parameters.id)} LIMIT 1`);
 
-    if(rows.length == 0)
-        return "No activity found!";
+    if(!row)
+        return "Activity doesn't exist!";
 
-    const json = JSON.parse(fs.readFileSync(global.config.paths.activities + `${parameters.id}.json`));
+    if(row.user != request.user.id)
+        return "You do not have permissions!";
+
+    const path = `${global.config.paths.activities}${parameters.id}.json`;
+
+    if(!fs.existsSync(path))
+        return "Something went wrong!";
+
+    const content = fs.readFileSync(path);
+
+    const json = JSON.parse(content);
 
     const builder = new XmlBuilder();
 
@@ -57,4 +67,4 @@ Server.on("GET", "/api/v1/activity/export", async (request, response, parameters
     builder.addElement(rootElement);
 
     return builder.toString(true);
-}, [ "id" ], "application/xml");
+});

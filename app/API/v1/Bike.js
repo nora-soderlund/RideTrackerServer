@@ -3,13 +3,11 @@ import global from "./../../../global.js";
 import Server from "./../../Server.js";
 import Database from "./../../Database.js";
 
-Server.on("GET", "/api/v1/bike", async (request, response, parameters) => {
-    const rows = await Database.queryAsync(`SELECT * FROM bikes WHERE id = ${Database.connection.escape(parameters.bike)} LIMIT 1`);
+Server.on("GET", "/api/v1/bike", { parameters: [ "bike" ] }, async (request, response, parameters) => {
+    const row = await Database.querySingleAsync(`SELECT * FROM bikes WHERE id = ${Database.connection.escape(parameters.bike)} LIMIT 1`);
     
-    if(rows.length == 0)
+    if(!row)
         return { success: false };
-
-    const row = rows[0];
 
     return {
         success: true,
@@ -24,4 +22,4 @@ Server.on("GET", "/api/v1/bike", async (request, response, parameters) => {
             type: row.type
         }
     };
-}, [ "bike" ]);
+});

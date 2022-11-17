@@ -6,10 +6,7 @@ import Database from "./../../../Database.js";
 
 import global from "./../../../../global.js";
 
-Server.on("PUT", "/api/v1/user/avatar", async (request, response, body) => {
-    if(request.user.guest)
-        return { success: false };
-
+Server.on("PUT", "/api/v1/user/avatar", { authenticated: true }, async (request, response, body) => {
     const id = uuidv4() + ".png";
 
     fs.writeFileSync(global.config.paths.avatars + "/" + id, body, "base64");

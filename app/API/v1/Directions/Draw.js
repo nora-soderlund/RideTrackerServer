@@ -1,14 +1,14 @@
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 
-import { Directions, Roads, Geocoding } from "./../../../Google/Google.js";
+import { Directions, Geocoding } from "./../../../Google/Google.js";
 
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
 import global from "./../../../../global.js";
 
-Server.on("POST", "/api/v1/directions/draw", async (request, response, body) => {
+Server.on("POST", "/api/v1/directions/draw", { parameters: [ "coordinates", "origin", "destination" ] }, async (request, response, body) => {
     let places = [];
 
     for(let index = 0; index < body.coordinates.length; index++) {
@@ -52,4 +52,4 @@ Server.on("POST", "/api/v1/directions/draw", async (request, response, body) => 
 
         content: id
     };
-}, [ "coordinates", "origin", "destination" ]);
+});

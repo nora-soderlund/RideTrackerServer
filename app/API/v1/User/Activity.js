@@ -1,7 +1,7 @@
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-Server.on("GET", "/api/v1/user/activity", async (request, response, parameters) => {
+Server.on("GET", "/api/v1/user/activity", { parameters: [ "user" ] }, async (request, response, parameters) => {
     const activities = await Database.queryAsync(`SELECT id, timestamp FROM activities WHERE user = ${Database.connection.escape(parameters.user)} ORDER BY timestamp DESC`);
     const bikes = await Database.queryAsync(`SELECT id, timestamp FROM bikes WHERE user = ${Database.connection.escape(parameters.user)} ORDER BY timestamp DESC`);
     const comments = await Database.queryAsync(`SELECT id, timestamp FROM activity_comments WHERE user = ${Database.connection.escape(parameters.user)} ORDER BY timestamp DESC`);
@@ -38,4 +38,4 @@ Server.on("GET", "/api/v1/user/activity", async (request, response, parameters) 
         success: true,
         content: result
     };
-}, [ "user" ]); 
+}); 

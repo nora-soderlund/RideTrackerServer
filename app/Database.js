@@ -55,6 +55,15 @@ export default class Database {
         });
     };
 
+    static async querySingleAsync(query) {
+        const rows = await this.queryAsync(query);
+
+        if(!rows.length)
+            return null;
+
+        return rows[0];
+    };
+
     static diagnose() {
         try {
             console.warn("WARNING! Attempting to diagnose MySQL server state...");

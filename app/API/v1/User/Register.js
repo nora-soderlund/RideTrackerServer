@@ -4,14 +4,11 @@ import bcrypt from "bcrypt";
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-Server.on("POST", "/api/v1/user/register", async (request, response, parameters) => {
-    const rows = await Database.queryAsync(`SELECT * FROM users WHERE email = ${Database.connection.escape(parameters.email)} LIMIT 1`);
+Server.on("POST", "/api/v1/user/register", { authenticated: false, parameters: [ "firstname", "lastname", "email", "password" ] }, async (request, response, parameters) => {
+    const row = await Database.querySingleAsync(`SELECT * FROM users WHERE email = ${Database.connection.escape(parameters.email)} LIMIT 1`);
 
-    if(rows.length != 0)
+    if(row)
         return { success: false, content: "E-mail address already belongs to an user!" };
-
-    if(!parameters.password)
-        return { success: false };
 
     const id = uuidv4();
     const token = uuidv4();
@@ -32,4 +29,4 @@ Server.on("POST", "/api/v1/user/register", async (request, response, parameters)
     await Database.queryAsync(`INSERT INTO user_tokens (id, user) VALUES (${escape.token}, ${escape.id})`);
 
     return { success: true, content: token };
-}, [ "firstname", "lastname", "email", "password" ]);
+});

@@ -3,15 +3,10 @@ import { v4 as uuidv4 } from "uuid";
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-Server.on("POST", "/api/v1/activity/like", async (request, response, parameters) => {
-    if(request.user.guest)
-        return { success: false };
+Server.on("POST", "/api/v1/activity/like", { authenticated: true, parameters: [ "activity" ] }, async (request, response, parameters) => {
+    const row = await Database.querySingleAsync(`SELECT * FROM activity_likes WHERE activity = ${Database.connection.escape(parameters.activity)} AND user = ${Database.connection.escape(request.user.id)}`);
 
-    const rows = await Database.queryAsync(`SELECT * FROM activity_likes WHERE activity = ${Database.connection.escape(parameters.activity)} AND user = ${Database.connection.escape(request.user.id)}`);
-
-    if(rows.length) {
-        const row = rows[0];
-
+    if(row) {
         await Database.queryAsync(`DELETE FROM activity_likes WHERE id = ${Database.connection.escape(row.id)}`);
 
         return {
@@ -29,16 +24,13 @@ Server.on("POST", "/api/v1/activity/like", async (request, response, parameters)
         success: true,
         content: true
     };
-}, [ "activity", "like" ]);
+});
 
-Server.on("GET", "/api/v1/activity/like", async (request, response, parameters) => {
-    if(request.user.guest)
-        return { success: false };
-
-    const rows = await Database.queryAsync(`SELECT * FROM activity_likes WHERE activity = ${Database.connection.escape(parameters.activity)} AND user = ${Database.connection.escape(request.user.id)}`);
+Server.on("GET", "/api/v1/activity/like", { authenticated: true, parameters: [ "activity" ] }, async (request, response, parameters) => {
+    const row = await Database.querySingleAsync(`SELECT * FROM activity_likes WHERE activity = ${Database.connection.escape(parameters.activity)} AND user = ${Database.connection.escape(request.user.id)}`);
 
     return {
         success: true,
-        content: (!!rows.length)
+        content: (!!row)
     };
-}, [ "activity", "like" ]);
+});

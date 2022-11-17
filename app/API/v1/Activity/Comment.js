@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
-Server.on("POST", "/api/v1/activity/comment", async (request, response, parameters) => {
+Server.on("POST", "/api/v1/activity/comment", { authenticated: true, parameters: [ "activity", "text" ], optionalParameters: [ "parent" ] }, async (request, response, parameters) => {
     const id = uuidv4();
     const timestamp = new Date(Date.now()).getTime();
 
@@ -13,13 +13,16 @@ Server.on("POST", "/api/v1/activity/comment", async (request, response, paramete
         success: true,
         content: id
     };
-}, [ "activity", "text" ]);
+});
 
-Server.on("GET", "/api/v1/activity/comment", async (request, response, parameters) => {
-    const rows = await Database.queryAsync(`SELECT * FROM activity_comments WHERE id = ${Database.connection.escape(parameters.comment)}`);
+Server.on("GET", "/api/v1/activity/comment", { parameters: [ "comment" ] }, async (request, response, parameters) => {
+    const row = await Database.querySingleAsync(`SELECT * FROM activity_comments WHERE id = ${Database.connection.escape(parameters.comment)}`);
+
+    if(!row)
+        return { success: false };
 
     return {
         success: true,
-        content: (rows.length)?(rows[0]):(null)
+        content: row
     };
-}, [ "comment" ]);
+});

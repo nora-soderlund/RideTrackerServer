@@ -118,11 +118,12 @@ export default class Server {
             else
                 result = await listener.response(request, response);
 
+
             response.writeHead(200, {
-                "Content-Type": listener.contentType
+                "Content-Type": listener.options.content ?? "application/json"
             });
 
-            if(listener.contentType == "application/json")
+            if(typeof result != "string")
                 result = JSON.stringify(result);
             
             response.end(result);
@@ -149,10 +150,10 @@ export default class Server {
         });
     };
 
-    static on(method, path, response, requiredParameters = undefined, contentType = "application/json") {
+    static on(method, path, options, response) {
         if(this.requests.find(x => x.method == method && x.path == path))
             throw new Error("Duplicate entry for " + method + " " + path);
 
-        this.requests.push({ method, path, response, requiredParameters, contentType });
+        this.requests.push({ method, path, options, response });
     };
 };

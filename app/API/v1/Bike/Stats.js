@@ -1,23 +1,16 @@
-
-
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
 
+Server.on("GET", "/api/v1/bike/stats", { parameters: [ "id" ] }, async (request, response, parameters) => {
+    const bike = await Database.querySingleAsync(`SELECT * FROM bikes WHERE id = ${Database.connection.escape(parameters.id)} LIMIT 1`);
 
-Server.on("GET", "/api/v1/bike/stats", async (request, response, parameters) => {
-    const bikes = await Database.queryAsync(`SELECT * FROM bikes WHERE id = ${Database.connection.escape(parameters.id)} LIMIT 1`);
-
-    if(bikes.length == 0)
+    if(!bike)
         return { success: false };
 
-    const bike = bikes[0];
+    const row = await Database.querySingleAsync(`SELECT COUNT(id) AS rides, SUM(\`distance\`) AS \`distance\`, SUM(elevation) AS elevation FROM activities WHERE bike = ${Database.connection.escape(bike.id)}`);
     
-    const rows = await Database.queryAsync(`SELECT COUNT(id) AS rides, SUM(\`distance\`) AS \`distance\`, SUM(elevation) AS elevation FROM activities WHERE bike = ${Database.connection.escape(bike.id)}`);
-    
-    if(rows.length == 0)
+    if(!row)
         return { success: false };
-
-    const row = rows[0];
 
     return {
         success: true,
@@ -27,4 +20,4 @@ Server.on("GET", "/api/v1/bike/stats", async (request, response, parameters) => 
             elevation: Math.round(row.elevation) ?? 0
         }
     };
-}, [ "id" ]);
+});
