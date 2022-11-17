@@ -91,6 +91,20 @@ export default class Server {
                 return response.end();
             }
 
+            if(listener.options && listener.options.hasOwnProperty("authenticated")) {
+                if(listener.options.authenticated && request.user.guest) {
+                    response.writeHead(401, "Unauthorized");
+                    
+                    return response.end();
+                }
+
+                if(listener.options.authenticated == false && !request.user.guest) {
+                    response.writeHead(403, "Forbidden");
+                    
+                    return response.end();
+                }
+            }
+
             let result = null;
 
             if((listener.method == "GET" || listener.method == "DELETE") && queryIndex != -1) {
