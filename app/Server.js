@@ -160,7 +160,7 @@ export default class Server {
             response.end(result);
         }
         catch(error) {
-            console.error(request.socket.remoteAddress + ": " + error);
+            console.error("ERROR " + request.method + " " + request.url + ": " + error);
         }
         finally {
             response.end();

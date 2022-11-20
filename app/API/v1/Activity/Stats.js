@@ -1,5 +1,9 @@
+import fs from "fs";
+
 import Server from "./../../../Server.js";
 import Database from "./../../../Database.js";
+
+import global from "./../../../../global.js";
 
 import Recording from "./../../../Data/Recording.js"
 
@@ -12,7 +16,13 @@ Server.on("GET", "/api/v1/activity/stats", { parameters: [ "id" ] }, async (requ
     if(row.manifest != Recording.version) {
         // if we need to update the manifest to a newer version
 
+        const path = `${global.config.paths.activities}${row.id}.json`;
+
+        if(!fs.existsSync(path))
+            return { success: false };
+
         const recording = new Recording(row.id);
+
         await recording.getManifest();
 
         const distance = recording.getDistance();
