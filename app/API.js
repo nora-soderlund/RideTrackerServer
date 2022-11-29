@@ -1,3 +1,5 @@
+import "./API/v1/Manifest.js";
+
 import "./API/v1/Ping.js";
 
 import "./API/v1/Feed.js";

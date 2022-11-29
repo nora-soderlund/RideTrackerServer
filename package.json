@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@googlemaps/polyline-codec": "^1.0.28",
+    "@nora-soderlund/json-messages": "^1.0.8",
     "@nora-soderlund/xmlbuilder": "^1.0.3",
     "bcrypt": "^5.0.1",
     "canvas": "^2.10.2",
