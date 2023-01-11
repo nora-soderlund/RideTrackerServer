@@ -24,11 +24,6 @@ export default class Roads {
     
             let response = await fetch(url);
             let result = await response.json();
-
-            fs.writeFileSync(global.config.paths.logs + `Google_Maps_Roads_snapToRoads_${Date.now()}.json`, JSON.stringify({
-                url,
-                response: result
-            }));
     
             let passedOverlap = false;
     
@@ -67,11 +62,6 @@ export default class Roads {
     
             let response = await fetch(url);
             let result = await response.json();
-
-            fs.writeFileSync(global.config.paths.logs + `Google_Maps_Roads_nearestRoads_${Date.now()}.json`, JSON.stringify({
-                url,
-                response: result
-            }));
     
             let passedOverlap = false;
     
