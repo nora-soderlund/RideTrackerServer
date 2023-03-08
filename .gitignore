@@ -1,9 +1,0 @@
-/node_modules
-*.pem
-/server/config.json
-/server/activities
-/server/directions
-/server/logs
-/server/public/uploads
-/server/public/bikes
-/server/public/avatars
