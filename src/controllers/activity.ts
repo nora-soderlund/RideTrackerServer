@@ -14,6 +14,8 @@ export async function activityHandler(request: FastifyRequest, reply: FastifyRep
     if(user === null)
         return { error: "Activity user doesn't exist." };
 
+    const bike = activity.bike && await getBikeById(activity.bike);
+
     return {
         ...activity,
 
@@ -21,6 +23,13 @@ export async function activityHandler(request: FastifyRequest, reply: FastifyRep
             id: user.id,
             name: user.firstname + " " + user.lastname,
             avatar: user.avatar
+        },
+
+        bike: bike && {
+            id: bike.id,
+            name: bike.name,
+            model: bike.model,
+            image: bike.image
         }
     };
 };

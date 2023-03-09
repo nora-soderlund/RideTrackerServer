@@ -24,6 +24,8 @@ console.log("Server is starting...");
 
 fastify.addHook("onSend", (request: FastifyRequest, reply: FastifyReply, payload: RequestPayload, done: DoneFuncWithErrOrRes) => {
     setTimeout(() => {
+        console.log("sending " + request.routerPath);
+
         done(null, payload);
     }, 1000);
 });
