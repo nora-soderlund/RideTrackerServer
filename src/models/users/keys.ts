@@ -38,3 +38,14 @@ export function getUserKeyById(id: string): Promise<UserKey | null> {
         });
     });
 };
+
+export function deleteUserKey(userKey: UserKey): Promise<void> {
+    return new Promise((resolve) => {
+        database.query("DELETE FROM user_keys WHERE id = ? LIMIT 1", [ userKey.id ], (error: any, results: any) => {
+            if(error)
+                throw error;
+
+            resolve();
+        });
+    });
+};

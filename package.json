@@ -13,12 +13,14 @@
   "license": "ISC",
   "dependencies": {
     "ajv": "^8.12.0",
+    "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "fastify": "^4.14.1",
     "mysql": "^2.18.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/mysql": "^2.15.21",
     "@types/node": "^18.14.6",
     "@types/uuid": "^9.0.1",
