@@ -22,6 +22,22 @@ const fastifyOptions = {
 
 console.log("Server is starting...");
 
+fastify.addHook("onRequest", async (request: FastifyRequest, reply: FastifyReply) => {
+    if(!request.routerPath.startsWith("/guest/")) {
+        if(!request.headers.authorization)
+            throw new Error("Authorization header missing.");
+
+        console.log(request.headers.authorization);
+
+        const userKey = await getUserKeyById(request.headers.authorization);
+
+        console.log(userKey);
+
+        if(!userKey)
+            throw new Error("Authorization key is invalid.");
+    }
+});
+
 fastify.addHook("onSend", (request: FastifyRequest, reply: FastifyReply, payload: RequestPayload, done: DoneFuncWithErrOrRes) => {
     setTimeout(() => {
         console.log("sending " + request.routerPath);
@@ -31,6 +47,7 @@ fastify.addHook("onSend", (request: FastifyRequest, reply: FastifyReply, payload
 });
 
 import "./routes";
+import { getUserKeyById } from "./models/users/keys";
 
 fastify.listen(fastifyOptions, (error: string, address: string) => {
     if (error) {
