@@ -91,5 +91,12 @@ export async function authenticateUserHandler(request: FastifyRequest, reply: Fa
     if(!userKey)
         return { key: null };
 
-    return { key: userKey.id };
+    return {
+        key: userKey.id,
+
+        user: {
+            name: user.firstname + " " + user.lastname,
+            avatar: user.avatar
+        }
+    };
 };
