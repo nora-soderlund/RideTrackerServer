@@ -28,3 +28,14 @@ export function getBikeById(id: string): Promise<Bike | null> {
         });
     });
 };
+
+export function getBikesByUser(user: string): Promise<Bike[]> {
+    return new Promise((resolve) => {
+        database.query("SELECT id, user, name, model, image, timestamp FROM bikes WHERE user = ? ORDER BY timestamp DESC", [ user ], (error: any, results: any) => {
+            if(error)
+                throw error;
+
+            return resolve(results);
+        });
+    });
+};
