@@ -17,7 +17,7 @@ const fastify = Container.register(typeof Fastify, Fastify());
 
 const fastifyOptions = {
     port: process.env.PORT,
-    host: "192.168.1.178"
+    host: process.env.HOST
 };
 
 console.log("Server is starting...");
